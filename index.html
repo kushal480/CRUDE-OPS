@@ -72,7 +72,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
 .dc{background:var(--bg1);padding:8px 10px}
 .dcl{font-size:8px;font-weight:600;letter-spacing:.1em;color:var(--td);text-transform:uppercase;margin-bottom:2px}
 .dcv{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tp)}
-.dcv.ok{color:var(--green)}.dcv.warn{color:var(--amber)}.dcv.cred{color:var(--red)}
+.dcv.ok{color:var(--green)}.dcv.warn{color:var(--amber)}
 .overlay{display:none;position:fixed;top:44px;left:250px;right:285px;bottom:0;background:var(--bg0);z-index:600;overflow-y:auto;padding:16px}
 .overlay.active{display:block}
 .sec-t{font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
@@ -92,7 +92,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
 .risk-medium{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3)}
 .gzone-note{font-size:10px;color:var(--td);line-height:1.6;margin-bottom:5px}
 .gzone-impact{font-size:10px;color:var(--tp);background:rgba(232,149,42,.07);padding:5px 8px;border-left:2px solid var(--amber)}
-.dbg{position:absolute;bottom:70px;right:10px;z-index:600;background:rgba(10,12,16,.95);border:1px solid var(--border);padding:6px 10px;font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--td);max-width:180px;line-height:1.6}
+.dbg{position:absolute;bottom:110px;right:10px;z-index:600;background:rgba(5,6,8,.97);border:1px solid var(--amber);padding:8px 12px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);width:270px;line-height:1.8;max-height:170px;overflow-y:auto}
 .leaflet-tile-pane{filter:brightness(.43) saturate(.18) hue-rotate(198deg) contrast(1.1)}
 .leaflet-container{background:#04050a!important}
 .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--amber)!important;border-color:var(--border)!important}
@@ -142,7 +142,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
       <div id="map"></div>
       <div class="mcoords" id="coords">LAT —.—— · LON —.——</div>
       <button class="zoom-reset" onclick="resetView()">⊕ WORLD VIEW</button>
-      <div class="dbg" id="dbg">WS: INIT</div>
+      <div class="dbg" id="dbg">⬡ DIAGNOSTIC LOG<br>Initializing...</div>
       <div class="mstats">
         <div class="sb"><div class="slb">Live Vessels</div><div class="sv" id="st-tot">0</div><div class="su3">tracked</div></div>
         <div class="sb"><div class="slb">Tankers</div><div class="sv" id="st-tank" style="color:var(--red)">0</div><div class="su3">oil class</div></div>
@@ -161,67 +161,62 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
   </div>
 </div>
 
-<!-- Region Overlay -->
 <div class="overlay" id="rov">
   <div class="sec-t">⬡ SELECT TRACKING REGION</div>
   <div class="rgrid" id="rgrid"></div>
   <div class="sec-t">⬡ HOW IT WORKS</div>
   <div style="font-size:11px;color:var(--td);line-height:1.8;background:var(--bg2);padding:14px;border:1px solid var(--border)">
     📡 <span style="color:var(--amber)">Real AIS data</span> — live transponder signals from actual vessels via aisstream.io<br><br>
-    <span style="color:var(--red)">🛢 VLCC / SUEZMAX / AFRAMAX</span> = tanker class by draught depth<br>
-    <span style="color:var(--green)">● Green</span> = Moving &nbsp;&nbsp; <span style="color:var(--yellow)">● Yellow</span> = Anchored/Slow<br>
-    ▲ Arrow on marker = vessel heading direction<br><br>
-    Click any <span style="color:var(--red)">dashed risk zone</span> on map to zoom into it.
+    <span style="color:var(--red)">🛢 VLCC / SUEZMAX / AFRAMAX</span> = tanker class by draught<br>
+    <span style="color:var(--green)">● Green</span> = Moving &nbsp;&nbsp;
+    <span style="color:var(--yellow)">● Yellow</span> = Anchored<br>
+    ▲ Arrow = vessel heading direction
   </div>
 </div>
 
-<!-- Geo Intel Overlay -->
 <div class="overlay" id="gov">
-  <div class="sec-t">⚠ GEOPOLITICAL CRUDE RISK ZONES — CLICK CARD TO ZOOM MAP</div>
+  <div class="sec-t">⚠ GEOPOLITICAL CRUDE RISK ZONES</div>
   <div id="gzones"></div>
   <div class="sec-t" style="margin-top:16px">⬡ INDIA CRUDE IMPORT — MARKET IMPACT</div>
   <div style="font-size:11px;color:var(--td);line-height:1.9;background:var(--bg2);padding:14px;border:1px solid var(--border);margin-bottom:12px">
-    🇮🇳 India imports <span style="color:var(--amber)">~88% of crude</span> requirements. Any Gulf disruption = direct INR + inflation shock.<br><br>
-    <span style="color:var(--red)">Hormuz closure risk:</span> +$15–30/bbl instant spike. ~40% India crude via Hormuz → BPCL/IOC/HPCL margin hit.<br>
-    <span style="color:var(--yellow)">Houthi / Bab el-Mandeb:</span> Cape rerouting = +10–14 days + $2–4/bbl freight premium on all tankers.<br>
-    <span style="color:var(--cyan)">Russia discount crude:</span> India ~35–40% from Russia in 2024 at Urals -$12–15 vs Brent = OMC margin support.
+    🇮🇳 India imports <span style="color:var(--amber)">~88% of crude</span> requirements.<br><br>
+    <span style="color:var(--red)">Hormuz closure:</span> +$15–30/bbl spike. BPCL/IOC/HPCL margin hit.<br>
+    <span style="color:var(--yellow)">Houthi attacks:</span> Cape rerouting = +10–14 days + $2–4/bbl freight.<br>
+    <span style="color:var(--cyan)">Russia discount:</span> Urals -$12–15 vs Brent = OMC margin support.
   </div>
-  <div class="sec-t">⬡ CRUDE PRICE SENSITIVITY — INDIAN MARKETS</div>
+  <div class="sec-t">⬡ CRUDE PRICE SENSITIVITY</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
     <div style="background:var(--bg2);border:1px solid var(--border);padding:10px">
       <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Brent +$5/bbl</div>
-      <div style="font-size:11px;color:var(--tp);line-height:1.6">OMC margins compress ~₹2/lit. BPCL/IOC/HPCL inventory loss if price hike not passed on.</div>
+      <div style="font-size:11px;color:var(--tp);line-height:1.6">OMC margins compress ~₹2/lit. BPCL/IOC/HPCL inventory loss.</div>
     </div>
     <div style="background:var(--bg2);border:1px solid var(--border);padding:10px">
       <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">INR Impact</div>
-      <div style="font-size:11px;color:var(--tp);line-height:1.6">+$10/bbl → INR depreciates ~₹0.5–0.8/USD. CAD widens ~0.3% GDP. RBI pressure.</div>
+      <div style="font-size:11px;color:var(--tp);line-height:1.6">+$10/bbl → INR depreciates ~₹0.5–0.8/USD. CAD widens ~0.3% GDP.</div>
     </div>
     <div style="background:var(--bg2);border:1px solid var(--border);padding:10px">
       <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">OMC Stocks</div>
-      <div style="font-size:11px;color:var(--tp);line-height:1.6">Rising crude = IOC/BPCL/HPCL under-recovery risk. Watch GRM — healthy above $8/bbl.</div>
+      <div style="font-size:11px;color:var(--tp);line-height:1.6">Watch GRM — healthy above $8/bbl. Under-recovery risk on high crude.</div>
     </div>
     <div style="background:var(--bg2);border:1px solid var(--border);padding:10px">
-      <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Shipping Stocks</div>
-      <div style="font-size:11px;color:var(--tp);line-height:1.6">Cape rerouting = tanker day-rates +200–400%. GE Shipping, Essar Shipping benefit directly.</div>
+      <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Shipping</div>
+      <div style="font-size:11px;color:var(--tp);line-height:1.6">Cape rerouting = day-rates +200–400%. GE Shipping benefits.</div>
     </div>
     <div style="background:var(--bg2);border:1px solid var(--border);padding:10px">
       <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Nifty Energy</div>
-      <div style="font-size:11px;color:var(--tp);line-height:1.6">Crude spike → OMCs sell off. But ONGC/Oil India gain on upstream realization rise.</div>
+      <div style="font-size:11px;color:var(--tp);line-height:1.6">Crude spike → OMCs sell off. ONGC/Oil India gain on upstream.</div>
     </div>
     <div style="background:var(--bg2);border:1px solid var(--border);padding:10px">
-      <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Tanker Size Guide</div>
-      <div style="font-size:11px;color:var(--tp);line-height:1.6"><span style="color:#ff4500">VLCC</span> ~2M bbls · <span style="color:#ff8c00">SUEZMAX</span> ~1M · <span style="color:#e8952a">AFRAMAX</span> ~700K · MR ~300K</div>
+      <div style="font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Tanker Guide</div>
+      <div style="font-size:11px;color:var(--tp);line-height:1.6"><span style="color:#ff4500">VLCC</span> ~2M · <span style="color:#ff8c00">SUEZMAX</span> ~1M · <span style="color:#e8952a">AFRAMAX</span> ~700K bbls</div>
     </div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-// API KEY — aisstream.io
-// ═══════════════════════════════════════════
 const API_KEY = '2578807dc05932c2b06d96e29bdb0ca52b05e614';
 
-const REGIONS = [
+const REGIONS=[
   {id:'world',     name:'🌍 World',              sub:'Global — all vessels',             bbox:[[[-90,-180],[90,180]]],       center:[20,20],   zoom:2},
   {id:'india',     name:'🇮🇳 India Waters',       sub:'Full Arabian Sea + Bay of Bengal', bbox:[[[5,62],[25,100]]],           center:[15,78],   zoom:5},
   {id:'arabian',   name:'🌊 Arabian Sea',         sub:'India west coast + Oman',          bbox:[[[8,55],[25,78]]],            center:[17,67],   zoom:5},
@@ -237,85 +232,82 @@ const REGIONS = [
   {id:'blacksea',  name:'⚓ Black Sea',           sub:'Russia Novorossiysk crude',        bbox:[[[40,27],[48,42]]],           center:[43,34],   zoom:5},
 ];
 
-const GEO_ZONES = [
-  {name:'Strait of Hormuz',      risk:'CRITICAL', cls:'',
-   bounds:[[24,54],[27,54],[27,61],[24,61]], color:'#e83a3a', fillOpacity:.08,
-   note:'Iran-US tensions. 20% of global crude + 17% LNG transit daily. Naval incident = $15–30 spike.',
-   impact:'40% of India crude via Hormuz. BPCL/IOC/HPCL most exposed. Nifty Energy sells off hard.',
+const GEO_ZONES=[
+  {name:'Strait of Hormuz',      risk:'CRITICAL',cls:'',
+   bounds:[[24,54],[27,54],[27,61],[24,61]],color:'#e83a3a',fillOpacity:.08,
+   note:'Iran-US tensions. 20% global crude daily. Naval incident = $15–30 spike.',
+   impact:'40% India crude via Hormuz. BPCL/IOC/HPCL most exposed.',
    goTo:{center:[25.5,57],zoom:7}},
-  {name:'Bab el-Mandeb',         risk:'CRITICAL', cls:'',
-   bounds:[[11,42],[14,42],[14,46],[11,46]], color:'#ff4500', fillOpacity:.09,
-   note:'Active Houthi missile & drone attacks. Suez traffic down ~50%. Cape rerouting adds 10–14 days.',
-   impact:'Tanker day-rates surged 300%+. India pays $2–4/bbl extra freight. War risk insurance spike.',
+  {name:'Bab el-Mandeb',         risk:'CRITICAL',cls:'',
+   bounds:[[11,42],[14,42],[14,46],[11,46]],color:'#ff4500',fillOpacity:.09,
+   note:'Active Houthi attacks. Suez traffic down ~50%. Cape adds 10–14 days.',
+   impact:'Tanker day-rates +300%. India pays $2–4/bbl extra freight.',
    goTo:{center:[12.5,44],zoom:7}},
-  {name:'Suez Canal / Red Sea',   risk:'HIGH',    cls:'medium',
-   bounds:[[12,32],[32,32],[32,37],[12,37]], color:'#f97316', fillOpacity:.06,
-   note:'Houthi threat forces Cape diversion for majority of VLCC/SUEZMAX traffic currently.',
-   impact:'Europe-India route delay. WTI-Brent spread widens. West Africa crude freight to India rises.',
+  {name:'Suez Canal / Red Sea',  risk:'HIGH',   cls:'medium',
+   bounds:[[12,32],[32,32],[32,37],[12,37]],color:'#f97316',fillOpacity:.06,
+   note:'Houthi threat forces Cape diversion for most VLCC traffic.',
+   impact:'Europe-India route delay. WTI-Brent spread widens.',
    goTo:{center:[27,34],zoom:6}},
-  {name:'Strait of Malacca',     risk:'MEDIUM',   cls:'medium',
-   bounds:[[-2,98],[7,98],[7,107],[-2,107]], color:'#fbbf24', fillOpacity:.05,
-   note:'80% of China/Japan crude imports transit here. Piracy risk + congestion near Singapore.',
-   impact:'Asian crude premium surge if disrupted. India east coast refinery costs rise. SGX spike.',
+  {name:'Strait of Malacca',     risk:'MEDIUM', cls:'medium',
+   bounds:[[-2,98],[7,98],[7,107],[-2,107]],color:'#fbbf24',fillOpacity:.05,
+   note:'80% of China/Japan crude transit here. Piracy risk.',
+   impact:'Asian crude premium surge if disrupted. India east coast costs rise.',
    goTo:{center:[3,103],zoom:6}},
-  {name:'Black Sea — Russia',    risk:'HIGH',     cls:'medium',
-   bounds:[[41,28],[47,28],[47,42],[41,42]], color:'#f97316', fillOpacity:.06,
-   note:'Russia-Ukraine war ongoing. Novorossiysk exports ~1.5 mb/d. Sanctions on crude shipping.',
-   impact:'Urals discount -$12–15 vs Brent benefits India. Escalation risks this cheap supply line.',
+  {name:'Black Sea — Russia',    risk:'HIGH',   cls:'medium',
+   bounds:[[41,28],[47,28],[47,42],[41,42]],color:'#f97316',fillOpacity:.06,
+   note:'Russia-Ukraine war. Novorossiysk ~1.5 mb/d exports.',
+   impact:'Urals -$12–15 vs Brent benefits India imports.',
    goTo:{center:[43,35],zoom:6}},
-  {name:'Persian Gulf (OPEC core)',risk:'HIGH',   cls:'medium',
-   bounds:[[23,46],[30,46],[30,58],[23,58]], color:'#f97316', fillOpacity:.05,
-   note:'Iraq, Kuwait, Saudi Arabia, UAE, Iran loading terminals. OPEC+ production decisions here.',
-   impact:'Saudi Aramco OSP changes directly affect Indian refinery margins. Kuwait/Iraq = primary source.',
+  {name:'Persian Gulf (OPEC)',   risk:'HIGH',   cls:'medium',
+   bounds:[[23,46],[30,46],[30,58],[23,58]],color:'#f97316',fillOpacity:.05,
+   note:'Iraq, Kuwait, Saudi, UAE, Iran terminals. OPEC+ decisions here.',
+   impact:'Saudi OSP changes directly hit Indian refinery margins.',
    goTo:{center:[26,52],zoom:6}},
 ];
 
-// ── HELPERS ──────────────────────────────────────────────────
 function getClass(t){const n=parseInt(t)||0;if(n>=80&&n<=89)return'tanker';if(n>=70&&n<=79)return'cargo';return'other';}
 function getTankerClass(d){if(!d||d<4)return'';if(d>=20)return'VLCC';if(d>=16)return'SUEZMAX';if(d>=12)return'AFRAMAX';if(d>=8)return'MR';return'';}
 function getTankerColor(tc){return tc==='VLCC'?'#ff4500':tc==='SUEZMAX'?'#ff8c00':tc==='AFRAMAX'?'#e8952a':'#6b7280';}
 function getCargoEst(tc){return tc==='VLCC'?'~2M bbls':tc==='SUEZMAX'?'~1M bbls':tc==='AFRAMAX'?'~700K bbls':tc==='MR'?'~300K bbls':'';}
 function getEmoji(c){return c==='tanker'?'🛢':c==='cargo'?'📦':'🚢';}
 function getLabel(c){return c==='tanker'?'TANKER':c==='cargo'?'CARGO':'OTHER';}
-function dbg(msg){document.getElementById('dbg').textContent='WS: '+msg;}
 
-let vessels={}, markers={}, sel=null, cf='all', ws=null;
-let msgTotal=0, activeR=REGIONS[0], retryDelay=3000, rlTimer;
+// ── DIAGNOSTIC LOG ───────────────────────────────────────────
+const _logs=[];
+function dbgLog(msg){
+  const n=new Date();
+  const ts=String(n.getUTCHours()).padStart(2,'0')+':'+
+           String(n.getUTCMinutes()).padStart(2,'0')+':'+
+           String(n.getUTCSeconds()).padStart(2,'0');
+  _logs.push('<span style="color:#4b5563">'+ts+'</span> '+msg);
+  if(_logs.length>10)_logs.shift();
+  const el=document.getElementById('dbg');
+  if(el){el.innerHTML='<span style="color:var(--amber);font-size:8px">⬡ DIAGNOSTIC</span><br>'+_logs.join('<br>');
+  el.scrollTop=el.scrollHeight;}
+}
 
-// ── MAP INIT ─────────────────────────────────────────────────
-const map = L.map('map',{
-  center:[20,20], zoom:2,
-  zoomControl:false, attributionControl:false,
-  minZoom:2, preferCanvas:true, renderer:L.canvas()
-});
+let vessels={},markers={},sel=null,cf='all',ws=null;
+let msgTotal=0,activeR=REGIONS[0],retryDelay=3000,rlTimer,attemptN=0;
+
+// ── MAP ───────────────────────────────────────────────────────
+const map=L.map('map',{center:[20,20],zoom:2,zoomControl:false,attributionControl:false,minZoom:2,preferCanvas:true,renderer:L.canvas()});
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
 L.control.zoom({position:'bottomright'}).addTo(map);
-map.on('mousemove',e=>{
-  document.getElementById('coords').textContent=
-    `LAT ${e.latlng.lat.toFixed(3)}° · LON ${e.latlng.lng.toFixed(3)}°`;
-});
+map.on('mousemove',e=>{document.getElementById('coords').textContent=`LAT ${e.latlng.lat.toFixed(3)}° · LON ${e.latlng.lng.toFixed(3)}°`;});
 
-// ── GEO RISK ZONES on MAP ────────────────────────────────────
 GEO_ZONES.forEach(z=>{
   const poly=L.polygon(z.bounds.map(b=>[b[0],b[1]]),{
-    color:z.color, weight:1.5, opacity:.65,
-    fillColor:z.color, fillOpacity:z.fillOpacity, dashArray:'5,4'
+    color:z.color,weight:1.5,opacity:.65,fillColor:z.color,fillOpacity:z.fillOpacity,dashArray:'5,4'
   }).addTo(map);
-  poly.bindTooltip(
-    `<b style="color:${z.color};font-size:12px">${z.name}</b><br>
-     <span style="font-size:9px;color:#9ca3af">${z.risk} RISK — click to zoom</span>`,
-    {sticky:true, opacity:.95}
-  );
+  poly.bindTooltip(`<b style="color:${z.color};font-size:12px">${z.name}</b><br><span style="font-size:9px;color:#9ca3af">${z.risk} RISK</span>`,{sticky:true,opacity:.95});
   poly.on('click',()=>map.flyTo(z.goTo.center,z.goTo.zoom,{duration:1.3}));
 });
 
-// Pulse animation CSS
 const pst=document.createElement('style');
 pst.textContent=`@keyframes vp{0%{transform:scale(1);opacity:.65}100%{transform:scale(2.6);opacity:0}}`;
 document.head.appendChild(pst);
 
-// ── MARKER ICON ───────────────────────────────────────────────
-function mkIcon(v, isSel=false){
+function mkIcon(v,isSel=false){
   const c=v.cls||'other';
   const mv=(v.sog||0)>0.8;
   const dc=c==='tanker'?'rgba(232,58,58,.95)':mv?'rgba(45,232,122,.9)':'rgba(251,191,36,.85)';
@@ -325,275 +317,209 @@ function mkIcon(v, isSel=false){
   const hdg=v.heading||v.cog||0;
   const tc=getTankerClass(v.draught);
   const tcol=getTankerColor(tc);
-  const arrowHtml=mv
-    ?`<div style="position:absolute;top:-10px;left:50%;margin-left:-4px;
-        width:0;height:0;
-        border-left:4px solid transparent;border-right:4px solid transparent;
-        border-bottom:9px solid ${dc};
-        transform:rotate(${hdg}deg);transform-origin:4px 19px;
-        opacity:.9;pointer-events:none;z-index:2;"></div>`
-    :'';
+  const arrowHtml=mv?`<div style="position:absolute;top:-10px;left:50%;margin-left:-4px;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:9px solid ${dc};transform:rotate(${hdg}deg);transform-origin:4px 19px;opacity:.9;pointer-events:none;z-index:2;"></div>`:'';
   return L.divIcon({
-    className:'', iconSize:[sz+4,sz+22], iconAnchor:[(sz+4)/2,sz/2],
+    className:'',iconSize:[sz+4,sz+22],iconAnchor:[(sz+4)/2,sz/2],
     html:`<div style="position:relative;${isSel?'transform:scale(1.18)':''}">
       ${arrowHtml}
-      <div style="width:${sz}px;height:${sz}px;border-radius:50%;
-          display:flex;align-items:center;justify-content:center;
-          font-size:${sz*.48}px;border:1.5px solid ${dc};
-          background:${bg};box-shadow:0 0 ${sz*.4}px ${dc};position:relative;">
-        <span style="position:absolute;inset:-5px;border-radius:50%;
-          border:1px solid ${dc};animation:vp ${sp} infinite;
-          pointer-events:none;opacity:.55;"></span>
+      <div style="width:${sz}px;height:${sz}px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${sz*.48}px;border:1.5px solid ${dc};background:${bg};box-shadow:0 0 ${sz*.4}px ${dc};position:relative;">
+        <span style="position:absolute;inset:-5px;border-radius:50%;border:1px solid ${dc};animation:vp ${sp} infinite;pointer-events:none;opacity:.55;"></span>
         ${getEmoji(c)}
       </div>
-      ${tc&&c==='tanker'
-        ?`<div style="position:absolute;top:0;right:-1px;font-size:6px;font-weight:700;
-             color:${tcol};background:rgba(5,6,8,.9);padding:0 2px;
-             border:1px solid ${tcol};line-height:1.4">${tc}</div>`:''}
-      <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);
-          margin-top:2px;font-family:'Share Tech Mono',monospace;font-size:7px;
-          color:rgba(232,228,216,.75);white-space:nowrap;background:rgba(5,6,8,.92);
-          padding:1px 4px;border:1px solid rgba(232,149,42,.2);
-          max-width:80px;overflow:hidden;text-overflow:ellipsis;">
-        ${(v.name||'?').substring(0,13)}
-      </div>
+      ${tc&&c==='tanker'?`<div style="position:absolute;top:0;right:-1px;font-size:6px;font-weight:700;color:${tcol};background:rgba(5,6,8,.9);padding:0 2px;border:1px solid ${tcol};line-height:1.4">${tc}</div>`:''}
+      <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:2px;font-family:'Share Tech Mono',monospace;font-size:7px;color:rgba(232,228,216,.75);white-space:nowrap;background:rgba(5,6,8,.92);padding:1px 4px;border:1px solid rgba(232,149,42,.2);max-width:80px;overflow:hidden;text-overflow:ellipsis;">${(v.name||'?').substring(0,13)}</div>
     </div>`
   });
 }
 
-// ═══════════════════════════════════════════
-// WEBSOCKET — FIXED
-// ✅ APIKey (correct field name per aisstream docs)
-// ✅ No subTimer (removed — was killing connection)
-// ✅ Exponential backoff on reconnect
-// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// WEBSOCKET
+// ═══════════════════════════════════════════════════════
 function connectWS(){
   if(ws){try{ws.close();}catch(e){} ws=null;}
   setStatus('connecting');
-  dbg('CONNECTING...');
+  attemptN++;
+  dbgLog('🔄 Attempt #'+attemptN);
 
   try{
-    ws = new WebSocket('wss://stream.aisstream.io/v0/stream');
+    ws=new WebSocket('wss://stream.aisstream.io/v0/stream');
+    dbgLog('WS created, state='+ws.readyState);
 
-    ws.onopen = () => {
-      retryDelay = 3000;
+    ws.onopen=()=>{
+      retryDelay=3000;
       setStatus('live');
-      dbg('OPEN — sending sub');
+      dbgLog('✅ CONNECTED! Sending sub...');
       ws.send(JSON.stringify({
         APIKey: API_KEY,
         BoundingBoxes: activeR.bbox,
-        FilterMessageTypes: ['PositionReport','ShipStaticData']
+        FilterMessageTypes:['PositionReport','ShipStaticData']
       }));
+      dbgLog('✅ Subscription sent OK');
     };
 
-    ws.onmessage = (e) => {
+    ws.onmessage=(e)=>{
       try{
-        const data = JSON.parse(e.data);
-        if(data.error || data.Error){
-          const em = data.error || data.Error;
-          console.error('AIS Error:', em);
-          dbg('ERR: '+em.substring(0,30));
+        const data=JSON.parse(e.data);
+        if(data.error||data.Error){
+          const em=data.error||data.Error;
+          dbgLog('❌ SERVER: '+em.substring(0,35));
           setStatus('error');
-          document.getElementById('vl').innerHTML =
-            `<div style="padding:16px;text-align:center;color:var(--red);
-              font-size:10px;letter-spacing:.08em;line-height:1.8">
-              ⚠ API ERROR<br>${em}<br><br>
-              <span style="color:var(--td)">Renew key at aisstream.io</span>
-            </div>`;
+          document.getElementById('vl').innerHTML=
+            `<div style="padding:16px;text-align:center;color:var(--red);font-size:10px;line-height:1.8">
+            ⚠ API KEY ERROR<br><span style="color:var(--td)">${em}</span></div>`;
           return;
         }
         msgTotal++;
+        if(msgTotal===1) dbgLog('✅ First message received!');
+        if(msgTotal===5) dbgLog('✅ Feed flowing — '+msgTotal+' msgs');
         handleMsg(data);
-        if(msgTotal===1) dbg('LIVE — msgs rcvd: '+msgTotal);
-        else if(msgTotal%50===0) dbg('LIVE — msgs: '+msgTotal);
-      }catch(ex){ console.warn(ex); }
-      document.getElementById('st-msg').textContent = msgTotal;
+      }catch(ex){console.warn(ex);}
+      document.getElementById('st-msg').textContent=msgTotal;
     };
 
-    ws.onclose = (ev) => {
-      console.log('WS closed — code:', ev.code, 'reason:', ev.reason);
-      dbg('CLOSED ('+ev.code+') retry in '+(retryDelay/1000).toFixed(0)+'s');
+    ws.onclose=(ev)=>{
+      dbgLog('❌ CLOSED code='+ev.code+' clean='+ev.wasClean);
+      if(ev.reason) dbgLog('   reason: "'+ev.reason.substring(0,30)+'"');
       setStatus('error');
-      retryDelay = Math.min(retryDelay * 1.5, 20000);
-      setTimeout(connectWS, retryDelay);
+      retryDelay=Math.min(retryDelay*1.5,20000);
+      dbgLog('⏳ Retry in '+(retryDelay/1000).toFixed(0)+'s');
+      setTimeout(connectWS,retryDelay);
     };
 
-    ws.onerror = (err) => {
-      console.error('WS error', err);
-      dbg('ERROR — check console');
+    ws.onerror=()=>{
+      dbgLog('❌ WS onerror fired');
       setStatus('error');
     };
 
   }catch(ex){
-    console.error(ex);
-    dbg('EXCEPTION: '+ex.message);
+    dbgLog('❌ EXCEPTION: '+ex.message);
     setStatus('error');
-    setTimeout(connectWS, 5000);
+    setTimeout(connectWS,5000);
   }
 }
 
-// ── MESSAGE HANDLER ──────────────────────────────────────────
 function handleMsg(msg){
-  const meta = msg.MetaData || {};
-  const mmsi = String(meta.MMSI || '');
-  if(!mmsi) return;
-
-  if(!vessels[mmsi]) vessels[mmsi] = {
-    mmsi, name:(meta.ShipName||'UNKNOWN').trim(),
-    lat:0, lng:0, sog:0, cog:0, heading:0,
-    cls:'other', shipType:0, dest:'', callsign:'', imo:'', draught:0,
-    lastSeen:Date.now()
-  };
-  const v = vessels[mmsi];
-  v.lastSeen = Date.now();
-
-  if(msg.MessageType === 'PositionReport'){
-    const d = msg.Message?.PositionReport || {};
-    v.lat     = meta.latitude  || d.Latitude  || v.lat;
-    v.lng     = meta.longitude || d.Longitude || v.lng;
-    v.sog     = d.Sog  || 0;
-    v.cog     = d.Cog  || 0;
-    v.heading = d.TrueHeading || d.Cog || 0;
-    v.navStatus = d.NavigationalStatus;
+  const meta=msg.MetaData||{};
+  const mmsi=String(meta.MMSI||'');
+  if(!mmsi)return;
+  if(!vessels[mmsi])vessels[mmsi]={mmsi,name:(meta.ShipName||'UNKNOWN').trim(),lat:0,lng:0,sog:0,cog:0,heading:0,cls:'other',shipType:0,dest:'',callsign:'',imo:'',draught:0,lastSeen:Date.now()};
+  const v=vessels[mmsi];
+  v.lastSeen=Date.now();
+  if(msg.MessageType==='PositionReport'){
+    const d=msg.Message?.PositionReport||{};
+    v.lat=meta.latitude||d.Latitude||v.lat;
+    v.lng=meta.longitude||d.Longitude||v.lng;
+    v.sog=d.Sog||0;v.cog=d.Cog||0;v.heading=d.TrueHeading||d.Cog||0;
+    v.navStatus=d.NavigationalStatus;
     placeMarker(v);
   }
-  if(msg.MessageType === 'ShipStaticData'){
-    const d = msg.Message?.ShipStaticData || {};
-    const nm = (d.Name || meta.ShipName || v.name || '').trim();
-    if(nm && nm !== 'UNKNOWN') v.name = nm;
-    v.shipType  = d.Type || 0;
-    v.cls       = getClass(v.shipType);
-    v.dest      = (d.Destination || '').trim();
-    v.callsign  = (d.CallSign || '').trim();
-    v.imo       = d.ImoNumber ? `IMO ${d.ImoNumber}` : '';
-    v.draught   = d.MaximumStaticDraught || 0;
-    if(markers[mmsi]) markers[mmsi].setIcon(mkIcon(v, sel===mmsi));
+  if(msg.MessageType==='ShipStaticData'){
+    const d=msg.Message?.ShipStaticData||{};
+    const nm=(d.Name||meta.ShipName||v.name||'').trim();
+    if(nm&&nm!=='UNKNOWN')v.name=nm;
+    v.shipType=d.Type||0;v.cls=getClass(v.shipType);
+    v.dest=(d.Destination||'').trim();
+    v.callsign=(d.CallSign||'').trim();
+    v.imo=d.ImoNumber?`IMO ${d.ImoNumber}`:'';
+    v.draught=d.MaximumStaticDraught||0;
+    if(markers[mmsi])markers[mmsi].setIcon(mkIcon(v,sel===mmsi));
   }
   scheduleRender();
 }
 
 function scheduleRender(){
   clearTimeout(rlTimer);
-  rlTimer = setTimeout(()=>{ renderList(); updateStats(); }, 300);
+  rlTimer=setTimeout(()=>{renderList();updateStats();},300);
 }
 
-// ── MARKER PLACE / UPDATE ────────────────────────────────────
 function placeMarker(v){
-  if(!v.lat || !v.lng) return;
+  if(!v.lat||!v.lng)return;
   if(markers[v.mmsi]){
-    markers[v.mmsi].setLatLng([v.lat, v.lng]);
-    markers[v.mmsi].setIcon(mkIcon(v, sel===v.mmsi));
-  } else {
-    const m = L.marker([v.lat, v.lng],{
-      icon: mkIcon(v, false),
-      zIndexOffset: v.cls==='tanker' ? 100 : 0
-    }).addTo(map);
-    m.on('click', ()=>pick(v.mmsi));
-    markers[v.mmsi] = m;
+    markers[v.mmsi].setLatLng([v.lat,v.lng]);
+    markers[v.mmsi].setIcon(mkIcon(v,sel===v.mmsi));
+  }else{
+    const m=L.marker([v.lat,v.lng],{icon:mkIcon(v,false),zIndexOffset:v.cls==='tanker'?100:0}).addTo(map);
+    m.on('click',()=>pick(v.mmsi));
+    markers[v.mmsi]=m;
   }
 }
 
-// Cleanup stale vessels (>10 min)
 setInterval(()=>{
-  const now = Date.now();
-  Object.keys(vessels)
-    .filter(m => now - vessels[m].lastSeen > 600000)
-    .forEach(m => {
-      if(markers[m]){ map.removeLayer(markers[m]); delete markers[m]; }
-      delete vessels[m];
-    });
+  const now=Date.now();
+  Object.keys(vessels).filter(m=>now-vessels[m].lastSeen>600000).forEach(m=>{
+    if(markers[m]){map.removeLayer(markers[m]);delete markers[m];}
+    delete vessels[m];
+  });
   scheduleRender();
-}, 60000);
+},60000);
 
-// ── VESSEL LIST ───────────────────────────────────────────────
 function renderList(){
-  const q = (document.getElementById('vsearch').value||'').toUpperCase().trim();
-  const all = Object.values(vessels);
-  let fl = cf==='all' ? all : all.filter(v=>v.cls===cf);
-  if(q) fl = fl.filter(v=>(v.name||'').toUpperCase().includes(q)||(v.mmsi||'').includes(q));
+  const q=(document.getElementById('vsearch').value||'').toUpperCase().trim();
+  const all=Object.values(vessels);
+  let fl=cf==='all'?all:all.filter(v=>v.cls===cf);
+  if(q)fl=fl.filter(v=>(v.name||'').toUpperCase().includes(q)||(v.mmsi||'').includes(q));
   fl.sort((a,b)=>(b.sog||0)-(a.sog||0));
-  document.getElementById('vc').textContent = `${all.length} tracked`;
-
+  document.getElementById('vc').textContent=`${all.length} tracked`;
   if(!fl.length){
-    document.getElementById('vl').innerHTML =
-      `<div style="padding:16px;text-align:center;color:var(--td);
-        font-size:10px;letter-spacing:.1em">
-        ${q ? 'NO MATCH FOUND' : 'WAITING FOR VESSELS...'}
-      </div>`;
+    document.getElementById('vl').innerHTML=`<div style="padding:16px;text-align:center;color:var(--td);font-size:10px;letter-spacing:.1em">${q?'NO MATCH':'WAITING FOR VESSELS...'}</div>`;
     return;
   }
-
-  document.getElementById('vl').innerHTML = fl.slice(0,100).map(v=>{
-    const mv  = (v.sog||0)>0.5;
-    const dc  = v.cls==='tanker'?'var(--red)':mv?'var(--green)':'var(--yellow)';
-    const tc  = v.cls==='tanker'?'tag-tanker':v.cls==='cargo'?'tag-cargo':'tag-other';
-    const tcls = getTankerClass(v.draught);
-    const tclsCol = getTankerColor(tcls);
-    const tclsTag = tcls&&v.cls==='tanker'
-      ?`<span style="font-size:7px;font-weight:700;color:${tclsCol};
-          border:1px solid ${tclsCol}50;padding:0 3px;margin-left:2px">${tcls}</span>`:'';
+  document.getElementById('vl').innerHTML=fl.slice(0,100).map(v=>{
+    const mv=(v.sog||0)>0.5;
+    const dc=v.cls==='tanker'?'var(--red)':mv?'var(--green)':'var(--yellow)';
+    const tc=v.cls==='tanker'?'tag-tanker':v.cls==='cargo'?'tag-cargo':'tag-other';
+    const tcls=getTankerClass(v.draught);
+    const tclsCol=getTankerColor(tcls);
+    const tclsTag=tcls&&v.cls==='tanker'?`<span style="font-size:7px;font-weight:700;color:${tclsCol};border:1px solid ${tclsCol}50;padding:0 3px;margin-left:2px">${tcls}</span>`:'';
     return `<div class="vi${sel===v.mmsi?' sel':''}" onclick="pick('${v.mmsi}')">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
         <div class="vn">${v.name||'UNKNOWN'}</div>
-        <div style="display:flex;gap:2px;flex-shrink:0;align-items:center">
-          ${tclsTag}
-          <span class="vtag ${tc}">${getLabel(v.cls)}</span>
-        </div>
+        <div style="display:flex;gap:2px;flex-shrink:0;align-items:center">${tclsTag}<span class="vtag ${tc}">${getLabel(v.cls)}</span></div>
       </div>
       <div style="display:flex;align-items:center;gap:5px;margin-top:2px">
-        <span style="display:inline-block;width:5px;height:5px;border-radius:50%;
-          background:${dc};flex-shrink:0"></span>
+        <span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:${dc};flex-shrink:0"></span>
         <span style="font-size:9px;color:var(--td)">${(v.sog||0).toFixed(1)} kn</span>
         <span style="font-size:9px;color:var(--td)">${Math.round(v.heading||0)}°</span>
-        ${v.dest?`<span style="font-size:9px;color:var(--td);margin-left:auto;
-            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:85px">
-            →${v.dest}</span>`:''}
+        ${v.dest?`<span style="font-size:9px;color:var(--td);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:85px">→${v.dest}</span>`:''}
       </div>
     </div>`;
   }).join('');
 }
 
 function updateStats(){
-  const all = Object.values(vessels);
-  document.getElementById('st-tot').textContent  = all.length;
-  document.getElementById('st-tank').textContent = all.filter(v=>v.cls==='tanker').length;
-  document.getElementById('st-reg').textContent  =
-    activeR.name.replace(/[^\w\s]/g,'').trim().toUpperCase().substring(0,8);
+  const all=Object.values(vessels);
+  document.getElementById('st-tot').textContent=all.length;
+  document.getElementById('st-tank').textContent=all.filter(v=>v.cls==='tanker').length;
+  document.getElementById('st-reg').textContent=activeR.name.replace(/[^\w\s]/g,'').trim().toUpperCase().substring(0,8);
 }
 
-// ── VESSEL DETAIL PANEL ───────────────────────────────────────
 function pick(mmsi){
-  if(sel && markers[sel] && vessels[sel]) markers[sel].setIcon(mkIcon(vessels[sel],false));
-  sel = mmsi;
-  const v = vessels[mmsi]; if(!v) return;
-  if(markers[mmsi]) markers[mmsi].setIcon(mkIcon(v,true));
-  renderList();
-  renderDetail(v);
-  if(v.lat&&v.lng) map.flyTo([v.lat,v.lng],8,{duration:1.4,easeLinearity:.25});
+  if(sel&&markers[sel]&&vessels[sel])markers[sel].setIcon(mkIcon(vessels[sel],false));
+  sel=mmsi;
+  const v=vessels[mmsi];if(!v)return;
+  if(markers[mmsi])markers[mmsi].setIcon(mkIcon(v,true));
+  renderList();renderDetail(v);
+  if(v.lat&&v.lng)map.flyTo([v.lat,v.lng],8,{duration:1.4,easeLinearity:.25});
 }
 
 function renderDetail(v){
-  const p = document.getElementById('rp'); p.className='rp';
-  const mv = (v.sog||0)>0.5;
-  const stTxt = mv?'UNDERWAY':(v.sog||0)<0.1?'MOORED/ANCHOR':'SLOW';
-  const stCls = mv?'ok':'warn';
-  const tc    = v.cls==='tanker'?'tag-tanker':v.cls==='cargo'?'tag-cargo':'tag-other';
-  const tcls  = getTankerClass(v.draught);
-  const tclsCol = getTankerColor(tcls);
-  const cargo = getCargoEst(tcls);
-
+  const p=document.getElementById('rp');p.className='rp';
+  const mv=(v.sog||0)>0.5;
+  const stTxt=mv?'UNDERWAY':(v.sog||0)<0.1?'MOORED/ANCHOR':'SLOW';
+  const stCls=mv?'ok':'warn';
+  const tc=v.cls==='tanker'?'tag-tanker':v.cls==='cargo'?'tag-cargo':'tag-other';
+  const tcls=getTankerClass(v.draught);
+  const tclsCol=getTankerColor(tcls);
+  const cargo=getCargoEst(tcls);
   p.innerHTML=`
     <div class="dh">
-      <div style="font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--td);
-          text-transform:uppercase;margin-bottom:4px">⬡ LIVE AIS DATA</div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--td);text-transform:uppercase;margin-bottom:4px">⬡ LIVE AIS DATA</div>
       <div class="dvn">${v.name||'UNKNOWN VESSEL'}</div>
       <div class="dmmsi">MMSI: ${v.mmsi}${v.imo?' · '+v.imo:''}</div>
       <div style="margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
         <span class="vtag ${tc}">${getLabel(v.cls)}</span>
-        ${tcls?`<span style="font-size:8px;font-weight:700;padding:1px 5px;
-            color:${tclsCol};border:1px solid ${tclsCol}60">${tcls}</span>`:''}
-        ${v.callsign?`<span style="font-family:'Share Tech Mono',monospace;
-            font-size:9px;color:var(--td)">${v.callsign}</span>`:''}
+        ${tcls?`<span style="font-size:8px;font-weight:700;padding:1px 5px;color:${tclsCol};border:1px solid ${tclsCol}60">${tcls}</span>`:''}
+        ${v.callsign?`<span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td)">${v.callsign}</span>`:''}
       </div>
     </div>
     <div class="dg">
@@ -608,56 +534,38 @@ function renderDetail(v){
     </div>
     ${tcls&&v.cls==='tanker'?`
     <div style="padding:10px 13px;border-top:1px solid var(--border);background:rgba(232,58,58,.04)">
-      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--red);
-          text-transform:uppercase;margin-bottom:5px">⬡ CRUDE CARGO ESTIMATE</div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--red);text-transform:uppercase;margin-bottom:5px">⬡ CRUDE CARGO ESTIMATE</div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-size:22px;font-weight:900;font-family:'Share Tech Mono',monospace;
-            color:${tclsCol}">${tcls}</div>
-        <div style="text-align:right">
-          <div style="font-size:13px;font-weight:700;color:var(--tp)">${cargo}</div>
-          <div style="font-size:9px;color:var(--td)">est. capacity</div>
-        </div>
+        <div style="font-size:22px;font-weight:900;font-family:'Share Tech Mono',monospace;color:${tclsCol}">${tcls}</div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--tp)">${cargo}</div><div style="font-size:9px;color:var(--td)">est. capacity</div></div>
       </div>
     </div>`:''}
-    ${v.dest?`
-    <div style="padding:10px 13px;border-top:1px solid var(--border)">
-      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--amber);
-          text-transform:uppercase;margin-bottom:4px">⬡ DESTINATION</div>
+    ${v.dest?`<div style="padding:10px 13px;border-top:1px solid var(--border)">
+      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;margin-bottom:4px">⬡ DESTINATION</div>
       <div style="font-size:14px;font-weight:700">${v.dest}</div>
     </div>`:''}
     <div style="padding:10px 13px;border-top:1px solid var(--border)">
-      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--amber);
-          text-transform:uppercase;margin-bottom:4px">⬡ LAST AIS PING</div>
-      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td)">
-        ${new Date(v.lastSeen).toUTCString()}</div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;margin-bottom:4px">⬡ LAST AIS PING</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td)">${new Date(v.lastSeen).toUTCString()}</div>
     </div>
     <div style="padding:10px 13px;border-top:1px solid var(--border)">
-      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--cyan);
-          text-transform:uppercase;margin-bottom:5px">⬡ TRACK ON</div>
+      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--cyan);text-transform:uppercase;margin-bottom:5px">⬡ TRACK ON</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <a href="https://www.marinetraffic.com/en/ais/details/ships/mmsi:${v.mmsi}"
-           target="_blank"
-           style="color:var(--cyan);font-size:10px;text-decoration:none;
-             border:1px solid rgba(45,224,200,.3);padding:3px 8px">↗ MarineTraffic</a>
-        <a href="https://www.vesselfinder.com/vessels?mmsi=${v.mmsi}"
-           target="_blank"
-           style="color:var(--cyan);font-size:10px;text-decoration:none;
-             border:1px solid rgba(45,224,200,.3);padding:3px 8px">↗ VesselFinder</a>
+        <a href="https://www.marinetraffic.com/en/ais/details/ships/mmsi:${v.mmsi}" target="_blank" style="color:var(--cyan);font-size:10px;text-decoration:none;border:1px solid rgba(45,224,200,.3);padding:3px 8px">↗ MarineTraffic</a>
+        <a href="https://www.vesselfinder.com/vessels?mmsi=${v.mmsi}" target="_blank" style="color:var(--cyan);font-size:10px;text-decoration:none;border:1px solid rgba(45,224,200,.3);padding:3px 8px">↗ VesselFinder</a>
       </div>
     </div>`;
 }
 
-// ── REGION & GEO PANEL BUILDERS ──────────────────────────────
 function buildRegions(){
-  document.getElementById('rgrid').innerHTML = REGIONS.map(r=>`
+  document.getElementById('rgrid').innerHTML=REGIONS.map(r=>`
     <div class="rc${r.id===activeR.id?' ar':''}" onclick="selRegion('${r.id}')">
-      <div class="rcn">${r.name}</div>
-      <div class="rcs">${r.sub}</div>
+      <div class="rcn">${r.name}</div><div class="rcs">${r.sub}</div>
     </div>`).join('');
 }
 
 function buildGeoZones(){
-  document.getElementById('gzones').innerHTML = GEO_ZONES.map(z=>`
+  document.getElementById('gzones').innerHTML=GEO_ZONES.map(z=>`
     <div class="gzone ${z.cls}" onclick="zoomGeo('${z.name}')">
       <div class="gzone-head">
         <div class="gzone-name" style="color:${z.color}">${z.name}</div>
@@ -669,31 +577,25 @@ function buildGeoZones(){
 }
 
 function zoomGeo(name){
-  const z = GEO_ZONES.find(g=>g.name===name); if(!z) return;
+  const z=GEO_ZONES.find(g=>g.name===name);if(!z)return;
   showTrack(document.getElementById('tab-track'));
-  map.flyTo(z.goTo.center, z.goTo.zoom, {duration:1.5});
+  map.flyTo(z.goTo.center,z.goTo.zoom,{duration:1.5});
 }
 
 function selRegion(id){
-  activeR = REGIONS.find(r=>r.id===id) || REGIONS[0];
+  activeR=REGIONS.find(r=>r.id===id)||REGIONS[0];
   Object.values(markers).forEach(m=>map.removeLayer(m));
-  markers={}; vessels={}; sel=null; msgTotal=0;
+  markers={};vessels={};sel=null;msgTotal=0;
   document.getElementById('st-msg').textContent='0';
   document.getElementById('rp').className='rp empty';
-  document.getElementById('rp').innerHTML=
-    `<div class="es">
-      <div style="font-size:34px;opacity:.2">⚓</div>
-      <div>SELECT A VESSEL</div>
-      <div style="font-size:8px;color:var(--td);margin-top:-4px">CLICK MAP OR LIST</div>
-    </div>`;
-  map.flyTo(activeR.center, activeR.zoom, {duration:1.5});
-  retryDelay = 3000;
+  document.getElementById('rp').innerHTML=`<div class="es"><div style="font-size:34px;opacity:.2">⚓</div><div>SELECT A VESSEL</div><div style="font-size:8px;color:var(--td);margin-top:-4px">CLICK MAP OR LIST</div></div>`;
+  map.flyTo(activeR.center,activeR.zoom,{duration:1.5});
+  retryDelay=3000;
   connectWS();
   buildRegions();
   showTrack(document.getElementById('tab-track'));
 }
 
-// ── NAV TABS ──────────────────────────────────────────────────
 function showRegions(btn){
   document.querySelectorAll('.navtab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
@@ -714,32 +616,21 @@ function showTrack(btn){
   document.getElementById('rov').classList.remove('active');
   document.getElementById('gov').classList.remove('active');
 }
-function resetView(){ map.flyTo(activeR.center, activeR.zoom, {duration:1.2}); }
-function filt(f,b){
-  cf=f;
-  document.querySelectorAll('.fb').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  renderList();
-}
+function resetView(){map.flyTo(activeR.center,activeR.zoom,{duration:1.2});}
+function filt(f,b){cf=f;document.querySelectorAll('.fb').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderList();}
 function setStatus(s){
-  const d=document.getElementById('ldot'), t=document.getElementById('btxt');
-  if(s==='live'){
-    d.style.background='var(--green)'; t.style.color='var(--green)'; t.textContent='AIS LIVE';
-  } else if(s==='connecting'){
-    d.style.background='var(--yellow)'; t.style.color='var(--yellow)'; t.textContent='CONNECTING...';
-  } else {
-    d.style.background='var(--red)'; t.style.color='var(--red)'; t.textContent='RECONNECTING...';
-  }
+  const d=document.getElementById('ldot'),t=document.getElementById('btxt');
+  if(s==='live'){d.style.background='var(--green)';t.style.color='var(--green)';t.textContent='AIS LIVE';}
+  else if(s==='connecting'){d.style.background='var(--yellow)';t.style.color='var(--yellow)';t.textContent='CONNECTING...';}
+  else{d.style.background='var(--red)';t.style.color='var(--red)';t.textContent='RECONNECTING...';}
 }
-
-// UTC Clock
 setInterval(()=>{
   const n=new Date();
-  document.getElementById('clk').textContent=
-    `${String(n.getUTCHours()).padStart(2,'0')}:${String(n.getUTCMinutes()).padStart(2,'0')}:${String(n.getUTCSeconds()).padStart(2,'0')} UTC`;
+  document.getElementById('clk').textContent=`${String(n.getUTCHours()).padStart(2,'0')}:${String(n.getUTCMinutes()).padStart(2,'0')}:${String(n.getUTCSeconds()).padStart(2,'0')} UTC`;
 },1000);
 
-// ── START ─────────────────────────────────────────────────────
+dbgLog('Page loaded ✅');
+dbgLog('API Key: ...'+API_KEY.slice(-6));
 connectWS();
 buildRegions();
 </script>
