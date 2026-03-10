@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRUDE OPS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg0:#050608;--bg1:#0a0c10;--bg2:#0f1117;--amber:#e8952a;--amber-dim:#b8721a;--aglow:rgba(232,149,42,0.15);--cyan:#2de0c8;--red:#e83a3a;--green:#2de87a;--tp:#e8e4d8;--td:#6b7280;--border:rgba(232,149,42,0.2);--bb:rgba(232,149,42,0.6)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',sans-serif;background:var(--bg0);color:var(--tp)}
+.app{display:flex;flex-direction:column;height:100vh}
+.topbar{height:44px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:4px;flex-shrink:0;z-index:1000}
+.logo{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--amber);letter-spacing:.2em;margin-right:12px}
+.navtab{padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--td);cursor:pointer;border:1px solid transparent;transition:all .15s;white-space:nowrap}
+.navtab:hover{color:var(--tp);border-color:var(--border)}
+.navtab.active{color:var(--amber);border-color:var(--border);background:var(--aglow)}
+.ml{margin-left:auto;display:flex;align-items:center;gap:14px}
+.livebadge{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green)}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.clock{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--td)}
+.main{display:flex;flex:1;overflow:hidden}
+
+/* LEFT PANEL */
+.lp{width:250px;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.ph{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ptitle{font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--amber);text-transform:uppercase}
+.vcount{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td)}
+.frow{padding:7px 10px;border-bottom:1px solid var(--border);display:flex;gap:5px}
+.fb{padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:.08em;border:1px solid var(--border);background:transparent;color:var(--td);cursor:pointer;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;transition:all .15s}
+.fb.active{border-color:var(--amber);color:var(--amber);background:var(--aglow)}
+.vlist{flex:1;overflow-y:auto;padding:3px 0}
+.vlist::-webkit-scrollbar{width:2px}
+.vlist::-webkit-scrollbar-thumb{background:var(--border)}
+.vi{padding:9px 14px;cursor:pointer;border-left:2px solid transparent;border-bottom:1px solid rgba(255,255,255,.03);transition:all .15s}
+.vi:hover{background:rgba(232,149,42,.06);border-left-color:var(--amber-dim)}
+.vi.sel{background:var(--aglow);border-left-color:var(--amber)}
+.vn{font-size:12px;font-weight:700;letter-spacing:.04em;margin-bottom:2px}
+.vtag{font-size:8px;font-weight:700;letter-spacing:.1em;padding:1px 5px;text-transform:uppercase}
+.tag-vlcc{color:var(--red);border:1px solid rgba(232,58,58,.4)}
+.tag-suez{color:#f59e0b;border:1px solid rgba(245,158,11,.4)}
+.tag-afra{color:var(--cyan);border:1px solid rgba(45,224,200,.4)}
+.vbar{display:flex;align-items:center;gap:5px;margin-top:4px}
+.bt{flex:1;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.bf{height:100%;border-radius:2px;transition:width .5s}
+.bl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);min-width:26px;text-align:right}
+
+/* MAP */
+.mc{flex:1;position:relative;overflow:hidden}
+#map{position:absolute;inset:0;width:100%;height:100%}
+.mgrid{position:absolute;inset:0;pointer-events:none;z-index:400;background-image:linear-gradient(rgba(232,149,42,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,149,42,.03) 1px,transparent 1px);background-size:60px 60px}
+.mcoords{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:500;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);letter-spacing:.1em;background:rgba(10,12,16,.85);padding:3px 10px;border:1px solid var(--border);white-space:nowrap;pointer-events:none}
+.mstats{position:absolute;bottom:16px;left:12px;z-index:500;display:flex;gap:7px}
+.sb{background:rgba(10,12,16,.92);border:1px solid var(--border);padding:7px 12px;backdrop-filter:blur(6px)}
+.slb{font-size:8px;font-weight:700;letter-spacing:.14em;color:var(--td);text-transform:uppercase;margin-bottom:1px}
+.sv{font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--amber);line-height:1}
+.su{font-size:9px;color:var(--td);margin-top:1px}
+.zoom-reset{position:absolute;top:12px;right:12px;z-index:500;background:rgba(10,12,16,.9);border:1px solid var(--border);color:var(--amber);padding:5px 10px;font-size:9px;font-family:'Share Tech Mono',monospace;letter-spacing:.1em;cursor:pointer;transition:all .15s}
+.zoom-reset:hover{background:var(--aglow)}
+
+/* RIGHT PANEL */
+.rp{width:285px;background:var(--bg1);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.rp::-webkit-scrollbar{width:2px}
+.rp::-webkit-scrollbar-thumb{background:var(--border)}
+.rp.empty{justify-content:center;align-items:center}
+.es{display:flex;flex-direction:column;align-items:center;gap:10px;opacity:.4;font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+
+/* DETAIL */
+.dh{padding:13px 14px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(232,149,42,.07),transparent)}
+.dvn{font-size:17px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.dmmsi{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--amber);margin-top:2px}
+.dflag{font-size:10px;color:var(--td);margin-top:4px}
+.sv2{padding:14px;border-bottom:1px solid var(--border)}
+.tg{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:10px}
+.tc{aspect-ratio:1;border:1px solid rgba(255,255,255,.1);border-radius:1px;position:relative;overflow:hidden;background:rgba(255,255,255,.02)}
+.tf{position:absolute;bottom:0;left:0;right:0;transition:height .8s}
+.tc.full .tf{background:linear-gradient(to top,var(--amber),#f59e0b)}
+.tc.partial .tf{background:linear-gradient(to top,#b8721a,var(--amber-dim))}
+.sn{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.sni{background:var(--bg2);padding:7px 9px;border:1px solid var(--border)}
+.snl{font-size:8px;font-weight:600;letter-spacing:.1em;color:var(--td);text-transform:uppercase;margin-bottom:2px}
+.snv{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--amber)}
+.snu{font-size:8px;color:var(--td)}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.dc{background:var(--bg1);padding:8px 10px}
+.dcl{font-size:8px;font-weight:600;letter-spacing:.1em;color:var(--td);text-transform:uppercase;margin-bottom:2px}
+.dcv{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--tp)}
+.dcv.ok{color:var(--green)}.dcv.warn{color:var(--amber)}.dcv.crit{color:var(--red)}
+.rs{padding:11px 14px;border-bottom:1px solid var(--border)}
+.rl{display:flex;align-items:center;margin-top:8px}
+.rport{font-size:11px;font-weight:700}
+.rarrow{flex:1;height:1px;background:linear-gradient(to right,var(--amber-dim),transparent,var(--amber-dim));margin:0 7px;position:relative}
+.rarrow::after{content:'▶';position:absolute;right:-4px;top:-7px;font-size:8px;color:var(--amber)}
+.rprog{margin-top:7px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.rpf{height:100%;background:linear-gradient(to right,var(--amber-dim),var(--amber));border-radius:2px}
+.rpct{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);margin-top:3px}
+
+/* TABS CONTENT */
+.tab-content{display:none;flex:1;flex-direction:column;overflow-y:auto}
+.tab-content.active{display:flex}
+.tc-inner{padding:16px;display:flex;flex-direction:column;gap:12px}
+.tab-section-title{font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.route-card{background:var(--bg2);border:1px solid var(--border);padding:10px 12px}
+.route-card-name{font-size:12px;font-weight:700;margin-bottom:6px}
+.route-card-row{display:flex;justify-content:space-between;font-size:10px;color:var(--td);margin-bottom:4px}
+.route-card-row span:last-child{color:var(--tp);font-family:'Share Tech Mono',monospace}
+.route-mini-prog{height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:6px}
+.route-mini-fill{height:100%;background:linear-gradient(to right,var(--amber-dim),var(--amber));border-radius:2px}
+.storage-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.storage-bar-label{font-size:10px;font-weight:700;min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.storage-bar-track{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.storage-bar-fill{height:100%;border-radius:3px}
+.storage-bar-val{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);min-width:30px;text-align:right}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.an-card{background:var(--bg2);border:1px solid var(--border);padding:10px 12px}
+.an-label{font-size:8px;font-weight:700;letter-spacing:.1em;color:var(--td);text-transform:uppercase;margin-bottom:4px}
+.an-val{font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--amber);line-height:1}
+.an-sub{font-size:9px;color:var(--td);margin-top:2px}
+.si{display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:4px}
+.su2{background:var(--green)}.sa{background:var(--amber)}.sl2{background:var(--cyan)}
+
+.leaflet-tile-pane{filter:brightness(.45) saturate(.2) hue-rotate(195deg) contrast(1.1)}
+.leaflet-container{background:#050608!important}
+.leaflet-control-zoom a{background:var(--bg2)!important;color:var(--amber)!important;border-color:var(--border)!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="logo">⬡ CRUDE OPS</div>
+    <div class="navtab active" onclick="switchTab('tracking',this)">LIVE TRACKING</div>
+    <div class="navtab" onclick="switchTab('routes',this)">ROUTES</div>
+    <div class="navtab" onclick="switchTab('storage',this)">STORAGE OPS</div>
+    <div class="navtab" onclick="switchTab('analytics',this)">ANALYTICS</div>
+    <div class="ml">
+      <div class="livebadge"><div class="ldot"></div>AIS LIVE</div>
+      <div class="clock" id="clk">00:00:00 UTC</div>
+    </div>
+  </div>
+  <div class="main">
+    <!-- LEFT -->
+    <div class="lp">
+      <div class="ph"><div class="ptitle">Active Vessels</div><div class="vcount" id="vc">0 tracked</div></div>
+      <div class="frow">
+        <button class="fb active" onclick="filt('all',this)">ALL</button>
+        <button class="fb" onclick="filt('vlcc',this)">VLCC</button>
+        <button class="fb" onclick="filt('suez',this)">SUEZ</button>
+        <button class="fb" onclick="filt('afra',this)">AFRA</button>
+      </div>
+      <div class="vlist" id="vl"></div>
+    </div>
+
+    <!-- MAP (always visible) -->
+    <div class="mc" id="map-container">
+      <div class="mgrid"></div>
+      <div id="map"></div>
+      <div class="mcoords" id="coords">LAT —.—— · LON —.——</div>
+      <button class="zoom-reset" onclick="resetView()">⊕ WORLD VIEW</button>
+      <div class="mstats">
+        <div class="sb"><div class="slb">Total Cargo</div><div class="sv" id="tc2">0</div><div class="su">thousand bbls</div></div>
+        <div class="sb"><div class="slb">Avg Load</div><div class="sv" id="al">0%</div><div class="su">utilization</div></div>
+        <div class="sb"><div class="slb">In Transit</div><div class="sv" id="it">0</div><div class="su">underway</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="rp empty" id="rp">
+      <div class="es"><div style="font-size:36px;opacity:.25">🛢</div><div>SELECT A VESSEL</div><div style="font-size:8px;color:var(--td);margin-top:-4px">CLICK MAP OR LIST</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROUTES OVERLAY -->
+<div id="routes-overlay" style="display:none;position:fixed;top:44px;left:250px;right:285px;bottom:0;background:var(--bg0);z-index:600;overflow-y:auto">
+  <div class="tc-inner" id="routes-content"></div>
+</div>
+
+<!-- STORAGE OVERLAY -->
+<div id="storage-overlay" style="display:none;position:fixed;top:44px;left:250px;right:285px;bottom:0;background:var(--bg0);z-index:600;overflow-y:auto">
+  <div class="tc-inner" id="storage-content"></div>
+</div>
+
+<!-- ANALYTICS OVERLAY -->
+<div id="analytics-overlay" style="display:none;position:fixed;top:44px;left:250px;right:285px;bottom:0;background:var(--bg0);z-index:600;overflow-y:auto">
+  <div class="tc-inner" id="analytics-content"></div>
+</div>
+
+<script>
+const V=[
+  {id:1,name:"HADRIAN SPIRIT",mmsi:"477285300",flag:"🇭🇰 Hong Kong",type:"vlcc",tl:"VLCC",lat:26.5,lng:56.3,hdg:142,spd:12.4,cap:320000,crg:298000,st:"underway",sl:"Underway",org:"Ras Tanura",dst:"Qingdao",rp:38,eta:"Mar 28",dwt:"319,485 DWT",blt:2015,imo:"IMO 9692194",tanks:[1,1,1,1,1,1,1,1,.9,.9,.8,.8,.7,.7,.6,.6,.5,0,0,0]},
+  {id:2,name:"SUPREME LADY",mmsi:"636016823",flag:"🇱🇷 Liberia",type:"vlcc",tl:"VLCC",lat:12.5,lng:48.8,hdg:315,spd:13.1,cap:315000,crg:315000,st:"underway",sl:"Underway",org:"Kharg Island",dst:"Rotterdam",rp:12,eta:"Apr 5",dwt:"314,920 DWT",blt:2018,imo:"IMO 9817023",tanks:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,.9,.9]},
+  {id:3,name:"OCEAN COLOSSUS",mmsi:"538004782",flag:"🇲🇭 Marshall Is.",type:"suez",tl:"SUEZMAX",lat:30.5,lng:32.3,hdg:340,spd:11.8,cap:165000,crg:142000,st:"underway",sl:"Underway",org:"Basrah",dst:"Trieste",rp:71,eta:"Mar 13",dwt:"164,700 DWT",blt:2016,imo:"IMO 9721845",tanks:[1,1,1,1,1,1,1,1,1,.9,.8,.6,.4,0,0,0,0,0,0,0]},
+  {id:4,name:"VEGA MERIDIAN",mmsi:"255805523",flag:"🇵🇹 Portugal",type:"suez",tl:"SUEZMAX",lat:23.5,lng:63.8,hdg:220,spd:9.2,cap:158000,crg:89000,st:"anchored",sl:"Anchored",org:"Abu Dhabi",dst:"Lagos",rp:55,eta:"Mar 18",dwt:"158,200 DWT",blt:2012,imo:"IMO 9543218",tanks:[1,1,1,.8,.7,.6,.5,.4,0,0,0,0,0,0,0,0,0,0,0,0]},
+  {id:5,name:"DELTA PIONEER",mmsi:"310717000",flag:"🇧🇲 Bermuda",type:"afra",tl:"AFRAMAX",lat:5.1,lng:103.2,hdg:65,spd:14.0,cap:105000,crg:101000,st:"underway",sl:"Underway",org:"Seria",dst:"Ulsan",rp:44,eta:"Mar 15",dwt:"104,800 DWT",blt:2019,imo:"IMO 9856432",tanks:[1,1,1,1,1,1,1,1,1,.9,.8,0,0,0,0,0,0,0,0,0]},
+  {id:6,name:"PACIFIC ORACLE",mmsi:"548654100",flag:"🇸🇬 Singapore",type:"afra",tl:"AFRAMAX",lat:1.2,lng:104.0,hdg:30,spd:6.5,cap:98000,crg:24000,st:"loading",sl:"Loading",org:"Singapore",dst:"Yokohama",rp:8,eta:"Mar 21",dwt:"98,300 DWT",blt:2014,imo:"IMO 9638754",tanks:[.9,.3,.2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+  {id:7,name:"ATLAS CENTURION",mmsi:"205448000",flag:"🇧🇪 Belgium",type:"vlcc",tl:"VLCC",lat:-5.8,lng:4.5,hdg:285,spd:11.6,cap:300000,crg:267000,st:"underway",sl:"Underway",org:"Bonny Terminal",dst:"Galveston",rp:62,eta:"Mar 22",dwt:"299,800 DWT",blt:2017,imo:"IMO 9741290",tanks:[1,1,1,1,1,1,1,1,1,1,.9,.8,.7,.6,0,0,0,0,0,0]},
+  {id:8,name:"KRIOS STAR",mmsi:"249065000",flag:"🇲🇹 Malta",type:"suez",tl:"SUEZMAX",lat:37.5,lng:14.5,hdg:60,spd:12.9,cap:160000,crg:155000,st:"underway",sl:"Underway",org:"Novorossiysk",dst:"Augusta",rp:85,eta:"Mar 11",dwt:"159,600 DWT",blt:2020,imo:"IMO 9902341",tanks:[1,1,1,1,1,1,1,1,1,1,1,1,.8,.7,.6,0,0,0,0,0]},
+  {id:9,name:"TITAN GLORY",mmsi:"477123400",flag:"🇨🇳 China",type:"vlcc",tl:"VLCC",lat:28.0,lng:122.5,hdg:190,spd:10.8,cap:308000,crg:290000,st:"underway",sl:"Underway",org:"Ras Tanura",dst:"Ningbo",rp:78,eta:"Mar 12",dwt:"307,800 DWT",blt:2016,imo:"IMO 9712345",tanks:[1,1,1,1,1,1,1,1,1,1,1,1,1,.9,.8,.7,0,0,0,0]},
+  {id:10,name:"NORDIC HAWK",mmsi:"258341000",flag:"🇳🇴 Norway",type:"afra",tl:"AFRAMAX",lat:58.5,lng:2.8,hdg:180,spd:8.4,cap:110000,crg:67000,st:"underway",sl:"Underway",org:"Statfjord",dst:"Rotterdam",rp:45,eta:"Mar 14",dwt:"109,500 DWT",blt:2013,imo:"IMO 9598234",tanks:[1,1,1,1,1,1,.8,.6,.4,0,0,0,0,0,0,0,0,0,0,0]},
+  {id:11,name:"GULF EMPRESS",mmsi:"372984000",flag:"🇵🇦 Panama",type:"suez",tl:"SUEZMAX",lat:-34.5,lng:19.5,hdg:75,spd:13.2,cap:162000,crg:158000,st:"underway",sl:"Underway",org:"Escravos",dst:"Chennai",rp:28,eta:"Apr 2",dwt:"161,800 DWT",blt:2017,imo:"IMO 9765432",tanks:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,.9,.8,0,0,0]},
+  {id:12,name:"PACIFIC TITAN",mmsi:"566234100",flag:"🇸🇬 Singapore",type:"vlcc",tl:"VLCC",lat:35.4,lng:140.8,hdg:90,spd:5.1,cap:295000,crg:18000,st:"loading",sl:"Loading",org:"Yokohama",dst:"Long Beach",rp:3,eta:"Apr 10",dwt:"294,700 DWT",blt:2021,imo:"IMO 9923456",tanks:[.3,.2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+];
+
+let sel=null,cf='all',MK={},map,activeTab='tracking';
+
+// MAP INIT — zoom 2, whole world
+map=L.map('map',{center:[20,15],zoom:2,zoomControl:false,attributionControl:false,minZoom:2});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
+L.control.zoom({position:'bottomright'}).addTo(map);
+map.on('mousemove',e=>{document.getElementById('coords').textContent=`LAT ${e.latlng.lat.toFixed(3)}° · LON ${e.latlng.lng.toFixed(3)}°`});
+
+// Pulse keyframe
+const pst=document.createElement('style');
+pst.textContent=`@keyframes shipPulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.4);opacity:0}}`;
+document.head.appendChild(pst);
+
+function resetView(){
+  map.flyTo([20,15],2,{duration:1.2});
+  sel=null;
+  document.getElementById('rp').className='rp empty';
+  document.getElementById('rp').innerHTML=`<div class="es"><div style="font-size:36px;opacity:.25">🛢</div><div>SELECT A VESSEL</div><div style="font-size:8px;color:var(--td);margin-top:-4px">CLICK MAP OR LIST</div></div>`;
+  renderList();renderMarkers();
+}
+
+function mkIcon(v,s=false){
+  const e=v.type==='vlcc'?'🛢':v.type==='suez'?'⛴':'🚢';
+  const sc=s?'transform:scale(1.4);':'';
+  const pc=v.type==='vlcc'?'rgba(232,58,58,.8)':v.type==='suez'?'rgba(245,158,11,.8)':'rgba(45,224,200,.7)';
+  const bc=v.type==='vlcc'?'rgba(232,58,58,1)':v.type==='suez'?'rgba(245,158,11,1)':'rgba(45,224,200,1)';
+  const bg=v.type==='vlcc'?'rgba(232,58,58,.25)':v.type==='suez'?'rgba(245,158,11,.25)':'rgba(45,224,200,.25)';
+  const sz=s?38:32;
+  return L.divIcon({className:'',iconSize:[sz+6,sz+20],iconAnchor:[(sz+6)/2,(sz)/2],html:`
+    <div style="position:relative;${sc}">
+      <div style="width:${sz}px;height:${sz}px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${sz*0.5}px;border:2px solid ${bc};background:${bg};box-shadow:0 0 ${sz/2}px ${pc},0 0 4px rgba(0,0,0,.9);position:relative;">
+        <span style="position:absolute;inset:-6px;border-radius:50%;border:1.5px solid ${pc};animation:shipPulse 2s infinite ease-out;pointer-events:none;"></span>
+        ${e}
+      </div>
+      <div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:2px;font-family:'Share Tech Mono',monospace;font-size:8px;color:rgba(232,228,216,.8);white-space:nowrap;background:rgba(5,6,8,.9);padding:1px 4px;border:1px solid rgba(232,149,42,.25);">${v.name.split(' ')[0]}</div>
+    </div>`});
+}
+
+function renderList(){
+  const fl=V.filter(v=>cf==='all'||v.type===cf);
+  document.getElementById('vc').textContent=`${fl.length} tracked`;
+  document.getElementById('vl').innerHTML=fl.map(v=>{
+    const p=Math.round(v.crg/v.cap*100);
+    const fc=p>80?'var(--amber)':p>40?'#f59e0b':'var(--cyan)';
+    const sc2=v.st==='underway'?'su2':v.st==='anchored'?'sa':'sl2';
+    return `<div class="vi${sel?.id===v.id?' sel':''}" onclick="pick(${v.id})">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="vn">${v.name}</div>
+        <span class="vtag tag-${v.type}">${v.tl}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;margin:2px 0 0">
+        <span class="si ${sc2}"></span>
+        <span style="font-size:9px;color:var(--td)">${v.sl}</span>
+        <span style="font-size:9px;color:var(--td);margin-left:auto">${v.org.split(' ')[0]}→${v.dst.split(',')[0]}</span>
+      </div>
+      <div class="vbar">
+        <div class="bt"><div class="bf" style="width:${p}%;background:${fc}"></div></div>
+        <div class="bl" style="color:${fc}">${p}%</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMarkers(){
+  Object.values(MK).forEach(m=>map.removeLayer(m));
+  MK={};
+  V.forEach(v=>{
+    const m=L.marker([v.lat,v.lng],{icon:mkIcon(v,sel?.id===v.id),zIndexOffset:sel?.id===v.id?1000:0}).addTo(map);
+    m.on('click',()=>pick(v.id));
+    MK[v.id]=m;
+  });
+}
+
+function stats(){
+  const tot=V.reduce((a,v)=>a+v.crg,0);
+  const avg=Math.round(V.reduce((a,v)=>a+v.crg/v.cap,0)/V.length*100);
+  const uw=V.filter(v=>v.st==='underway').length;
+  document.getElementById('tc2').textContent=Math.round(tot/1000).toLocaleString();
+  document.getElementById('al').textContent=avg+'%';
+  document.getElementById('it').textContent=uw;
+}
+
+function pick(id){
+  sel=V.find(v=>v.id===id);
+  // Switch to tracking tab if not there
+  if(activeTab!=='tracking'){
+    document.querySelectorAll('.navtab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.navtab')[0].classList.add('active');
+    switchTab('tracking',document.querySelectorAll('.navtab')[0]);
+  }
+  renderList();renderMarkers();detail();
+  map.flyTo([sel.lat,sel.lng],5,{duration:1.5,easeLinearity:.25});
+}
+
+function detail(){
+  const v=sel;if(!v)return;
+  const p=document.getElementById('rp');
+  p.className='rp';
+  const pct=Math.round(v.crg/v.cap*100);
+  const fr=v.cap-v.crg;
+  const th=v.tanks.map(f=>{
+    const c=f>=.9?'full':f>0?'partial':'';
+    return `<div class="tc ${c}"><div class="tf" style="height:${f*100}%"></div></div>`;
+  }).join('');
+  const sc=v.st==='underway'?'ok':v.st==='anchored'?'warn':'ok';
+  p.innerHTML=`
+    <div class="dh">
+      <div style="font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--td);text-transform:uppercase;margin-bottom:5px">VESSEL INTELLIGENCE</div>
+      <div class="dvn">${v.name}</div>
+      <div class="dmmsi">${v.imo} · ${v.mmsi}</div>
+      <div class="dflag">${v.flag} · ${v.dwt} · ${v.blt}</div>
+    </div>
+    <div class="sv2">
+      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;margin-bottom:9px">⬡ TANK STORAGE STATUS</div>
+      <div class="tg">${th}</div>
+      <div class="sn">
+        <div class="sni"><div class="snl">Loaded</div><div class="snv">${(v.crg/1000).toFixed(0)}k</div><div class="snu">barrels</div></div>
+        <div class="sni"><div class="snl">Remaining</div><div class="snv" style="color:var(--cyan)">${(fr/1000).toFixed(0)}k</div><div class="snu">bbls free</div></div>
+        <div class="sni"><div class="snl">Capacity</div><div class="snv">${(v.cap/1000).toFixed(0)}k</div><div class="snu">bbls max</div></div>
+        <div class="sni"><div class="snl">Load Factor</div><div class="snv" style="color:${pct>80?'var(--amber)':pct>50?'#f59e0b':'var(--cyan)'}">${pct}%</div><div class="snu">utilized</div></div>
+      </div>
+    </div>
+    <div class="dg">
+      <div class="dc"><div class="dcl">Status</div><div class="dcv ${sc}">${v.sl.toUpperCase()}</div></div>
+      <div class="dc"><div class="dcl">Speed</div><div class="dcv">${v.spd} kn</div></div>
+      <div class="dc"><div class="dcl">Heading</div><div class="dcv">${v.hdg}°</div></div>
+      <div class="dc"><div class="dcl">ETA</div><div class="dcv warn">${v.eta}</div></div>
+      <div class="dc"><div class="dcl">Latitude</div><div class="dcv">${v.lat.toFixed(3)}°</div></div>
+      <div class="dc"><div class="dcl">Longitude</div><div class="dcv">${v.lng.toFixed(3)}°</div></div>
+    </div>
+    <div class="rs">
+      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--amber);text-transform:uppercase">⬡ ROUTE</div>
+      <div class="rl"><div class="rport">${v.org}</div><div class="rarrow"></div><div class="rport">${v.dst}</div></div>
+      <div class="rprog"><div class="rpf" style="width:${v.rp}%"></div></div>
+      <div class="rpct">${v.rp}% complete · ETA ${v.eta}</div>
+    </div>
+    <div style="padding:10px 14px">
+      <div style="font-size:8px;font-weight:700;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;margin-bottom:6px">⬡ CLASS</div>
+      <div style="font-size:11px;color:var(--td);line-height:1.6">${v.tl==='VLCC'?'Very Large Crude Carrier. 200k–320k DWT. Long-haul Persian Gulf → Asia/Europe.':v.tl==='SUEZMAX'?'Suezmax class. 120k–200k DWT. Max size for Suez Canal transit.':'Aframax class. 80k–120k DWT. Average Freight Rate Assessment. Regional crude.'}</div>
+    </div>`;
+}
+
+// ─── TAB SWITCHING ───────────────────────────────────────────
+function switchTab(tab, btn){
+  activeTab=tab;
+  document.querySelectorAll('.navtab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  // Hide all overlays
+  ['routes','storage','analytics'].forEach(t=>{
+    document.getElementById(t+'-overlay').style.display='none';
+  });
+  if(tab==='tracking'){
+    // map already visible
+  } else if(tab==='routes'){
+    renderRoutesTab();
+    document.getElementById('routes-overlay').style.display='block';
+  } else if(tab==='storage'){
+    renderStorageTab();
+    document.getElementById('storage-overlay').style.display='block';
+  } else if(tab==='analytics'){
+    renderAnalyticsTab();
+    document.getElementById('analytics-overlay').style.display='block';
+  }
+}
+
+function renderRoutesTab(){
+  const sorted=[...V].sort((a,b)=>b.rp-a.rp);
+  document.getElementById('routes-content').innerHTML=`
+    <div class="tab-section-title">⬡ ALL VESSEL ROUTES — LIVE STATUS</div>
+    ${sorted.map(v=>{
+      const sc2=v.st==='underway'?'su2':v.st==='anchored'?'sa':'sl2';
+      const fc=v.rp>70?'var(--green)':v.rp>40?'var(--amber)':'var(--red)';
+      return `<div class="route-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div class="route-card-name">${v.name}</div>
+          <span class="vtag tag-${v.type}">${v.tl}</span>
+        </div>
+        <div class="route-card-row"><span>Origin</span><span>${v.org}</span></div>
+        <div class="route-card-row"><span>Destination</span><span>${v.dst}</span></div>
+        <div class="route-card-row"><span>Status</span><span><span class="si ${sc2}"></span>${v.sl}</span></div>
+        <div class="route-card-row"><span>ETA</span><span>${v.eta}</span></div>
+        <div class="route-card-row"><span>Speed</span><span>${v.spd} kn · ${v.hdg}° heading</span></div>
+        <div class="route-mini-prog"><div class="route-mini-fill" style="width:${v.rp}%;background:${fc}"></div></div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);margin-top:3px">${v.rp}% complete</div>
+      </div>`;
+    }).join('')}`;
+}
+
+function renderStorageTab(){
+  const sorted=[...V].sort((a,b)=>(b.crg/b.cap)-(a.crg/a.cap));
+  const totalCap=V.reduce((a,v)=>a+v.cap,0);
+  const totalCrg=V.reduce((a,v)=>a+v.crg,0);
+  const totalFree=totalCap-totalCrg;
+  document.getElementById('storage-content').innerHTML=`
+    <div class="tab-section-title">⬡ FLEET STORAGE OVERVIEW</div>
+    <div class="analytics-grid" style="margin-bottom:12px">
+      <div class="an-card"><div class="an-label">Fleet Capacity</div><div class="an-val">${(totalCap/1000).toFixed(0)}k</div><div class="an-sub">barrels total</div></div>
+      <div class="an-card"><div class="an-label">Total Loaded</div><div class="an-val" style="color:var(--amber)">${(totalCrg/1000).toFixed(0)}k</div><div class="an-sub">barrels loaded</div></div>
+      <div class="an-card"><div class="an-label">Available Space</div><div class="an-val" style="color:var(--cyan)">${(totalFree/1000).toFixed(0)}k</div><div class="an-sub">barrels free</div></div>
+      <div class="an-card"><div class="an-label">Fleet Utilization</div><div class="an-val">${Math.round(totalCrg/totalCap*100)}%</div><div class="an-sub">avg load factor</div></div>
+    </div>
+    <div class="tab-section-title">⬡ VESSEL STORAGE BREAKDOWN</div>
+    ${sorted.map(v=>{
+      const pct=Math.round(v.crg/v.cap*100);
+      const fr=v.cap-v.crg;
+      const fc=pct>80?'var(--amber)':pct>50?'#f59e0b':'var(--cyan)';
+      return `<div style="background:var(--bg2);border:1px solid var(--border);padding:10px 12px;margin-bottom:4px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <div style="font-size:12px;font-weight:700">${v.name}</div>
+          <span class="vtag tag-${v.type}">${v.tl}</span>
+        </div>
+        <div class="storage-bar-row">
+          <div class="storage-bar-label" style="font-size:9px;color:var(--td)">LOADED</div>
+          <div class="storage-bar-track"><div class="storage-bar-fill" style="width:${pct}%;background:${fc}"></div></div>
+          <div class="storage-bar-val" style="color:${fc}">${pct}%</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:4px">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px"><span style="color:var(--td);font-size:8px">CAP </span>${(v.cap/1000).toFixed(0)}k</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--amber)"><span style="color:var(--td);font-size:8px">LOAD </span>${(v.crg/1000).toFixed(0)}k</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan)"><span style="color:var(--td);font-size:8px">FREE </span>${(fr/1000).toFixed(0)}k</div>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+function renderAnalyticsTab(){
+  const byType={vlcc:V.filter(v=>v.type==='vlcc'),suez:V.filter(v=>v.type==='suez'),afra:V.filter(v=>v.type==='afra')};
+  const uw=V.filter(v=>v.st==='underway').length;
+  const anc=V.filter(v=>v.st==='anchored').length;
+  const ld=V.filter(v=>v.st==='loading').length;
+  const totalCrg=V.reduce((a,v)=>a+v.crg,0);
+  document.getElementById('analytics-content').innerHTML=`
+    <div class="tab-section-title">⬡ FLEET ANALYTICS</div>
+    <div class="analytics-grid">
+      <div class="an-card"><div class="an-label">Total Vessels</div><div class="an-val">${V.length}</div><div class="an-sub">tracked globally</div></div>
+      <div class="an-card"><div class="an-label">Total Cargo</div><div class="an-val">${(totalCrg/1000).toFixed(0)}k</div><div class="an-sub">barrels at sea</div></div>
+      <div class="an-card"><div class="an-label">Underway</div><div class="an-val" style="color:var(--green)">${uw}</div><div class="an-sub">vessels in transit</div></div>
+      <div class="an-card"><div class="an-label">Anchored</div><div class="an-val" style="color:var(--amber)">${anc}</div><div class="an-sub">vessels waiting</div></div>
+      <div class="an-card"><div class="an-label">Loading</div><div class="an-val" style="color:var(--cyan)">${ld}</div><div class="an-sub">vessels at port</div></div>
+      <div class="an-card"><div class="an-label">Avg Speed</div><div class="an-val">${(V.filter(v=>v.st==='underway').reduce((a,v)=>a+v.spd,0)/uw).toFixed(1)}</div><div class="an-sub">knots (underway)</div></div>
+    </div>
+    <div class="tab-section-title" style="margin-top:12px">⬡ FLEET BREAKDOWN BY CLASS</div>
+    ${Object.entries(byType).map(([type,vessels])=>{
+      const cap=vessels.reduce((a,v)=>a+v.cap,0);
+      const crg=vessels.reduce((a,v)=>a+v.crg,0);
+      const pct=Math.round(crg/cap*100);
+      const label=type==='vlcc'?'VLCC':type==='suez'?'SUEZMAX':'AFRAMAX';
+      const fc=type==='vlcc'?'var(--red)':type==='suez'?'#f59e0b':'var(--cyan)';
+      return `<div style="background:var(--bg2);border:1px solid var(--border);padding:10px 12px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:13px;font-weight:700;color:${fc}">${label}</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--td)">${vessels.length} vessels</div>
+        </div>
+        <div class="storage-bar-row">
+          <div class="storage-bar-track"><div class="storage-bar-fill" style="width:${pct}%;background:${fc}"></div></div>
+          <div class="storage-bar-val" style="color:${fc}">${pct}%</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;font-size:10px;font-family:'Share Tech Mono',monospace">
+          <div><span style="color:var(--td);font-size:8px">CAPACITY </span>${(cap/1000).toFixed(0)}k bbls</div>
+          <div style="color:var(--amber)"><span style="color:var(--td);font-size:8px">LOADED </span>${(crg/1000).toFixed(0)}k bbls</div>
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+function filt(f,b){
+  cf=f;
+  document.querySelectorAll('.fb').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  renderList();
+}
+
+// Clock
+setInterval(()=>{
+  const n=new Date();
+  document.getElementById('clk').textContent=`${String(n.getUTCHours()).padStart(2,'0')}:${String(n.getUTCMinutes()).padStart(2,'0')}:${String(n.getUTCSeconds()).padStart(2,'0')} UTC`;
+},1000);
+
+// Live movement
+setInterval(()=>{
+  V.forEach(v=>{
+    if(v.st==='underway'){
+      const r=v.hdg*Math.PI/180;
+      v.lat+=Math.cos(r)*.018+(Math.random()-.5)*.004;
+      v.lng+=Math.sin(r)*.018+(Math.random()-.5)*.004;
+      v.spd=+(v.spd+(Math.random()-.5)*.1).toFixed(1);
+      if(MK[v.id])MK[v.id].setLatLng([v.lat,v.lng]);
+    }
+  });
+  if(sel){sel=V.find(v=>v.id===sel.id);detail();}
+},3000);
+
+renderList();renderMarkers();stats();
+</script>
+</body>
+</html>
