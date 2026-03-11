@@ -9,41 +9,44 @@
 :root{
   --bg0:#050608;--bg1:#0a0c10;--bg2:#0f1117;
   --amber:#e8952a;--aglow:rgba(232,149,42,0.14);
-  --cyan:#2de0c8;--red:#e83a3a;--green:#2de87a;--yellow:#fbbf24;--orange:#f97316;
+  --cyan:#2de0c8;--red:#e83a3a;--green:#2de87a;--yellow:#fbbf24;--orange:#f97316;--purple:#a855f7;
   --tp:#e8e4d8;--td:#6b7280;--border:rgba(232,149,42,0.18);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',sans-serif;background:var(--bg0);color:var(--tp)}
 .app{display:flex;flex-direction:column;height:100vh}
-.topbar{height:44px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0;z-index:100}
-.logo{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--amber);letter-spacing:.18em;margin-right:6px}
-.navtab{padding:5px 11px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--td);cursor:pointer;border:1px solid transparent;transition:all .15s;white-space:nowrap}
+.topbar{height:44px;background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:6px;flex-shrink:0;z-index:100}
+.logo{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--amber);letter-spacing:.18em;margin-right:6px;white-space:nowrap}
+.navtab{padding:5px 10px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--td);cursor:pointer;border:1px solid transparent;transition:all .15s;white-space:nowrap}
 .navtab.active{color:var(--amber);border-color:var(--border);background:var(--aglow)}
 .navtab.red{color:var(--red)}.navtab.red.active{color:var(--red);border-color:rgba(232,58,58,.4);background:rgba(232,58,58,.08)}
-.ml{margin-left:auto;display:flex;align-items:center;gap:12px}
+.navtab.blue{color:var(--cyan)}.navtab.blue.active{color:var(--cyan);border-color:rgba(45,224,200,.4);background:rgba(45,224,200,.06)}
+.navtab.purple{color:var(--purple)}.navtab.purple.active{color:var(--purple);border-color:rgba(168,85,247,.4);background:rgba(168,85,247,.06)}
+.ml{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .livebadge{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:10px}
-.ldot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
+.ldot{width:7px;height:7px;border-radius:50%;animation:blink 1.5s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .clock{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--td)}
 .body{display:flex;flex:1;overflow:hidden}
-/* LEFT PANEL */
-.lp{width:220px;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
-.lp::-webkit-scrollbar{width:2px}
-.lp::-webkit-scrollbar-thumb{background:var(--border)}
-.sec{padding:10px 12px;border-bottom:1px solid var(--border)}
-.sec-t{font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:8px}
-.rbtn{display:block;width:100%;padding:7px 10px;margin-bottom:5px;background:var(--bg2);border:1px solid var(--border);color:var(--td);font-size:10px;font-weight:700;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;cursor:pointer;text-align:left;transition:all .15s;letter-spacing:.05em}
+.lp{width:210px;background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.lp::-webkit-scrollbar{width:2px}.lp::-webkit-scrollbar-thumb{background:var(--border)}
+.sec{padding:9px 11px;border-bottom:1px solid var(--border)}
+.sec-t{font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:7px}
+.sec-t.blue{color:var(--cyan)}
+.sec-t.purple{color:var(--purple)}
+.rbtn{display:block;width:100%;padding:7px 9px;margin-bottom:4px;background:var(--bg2);border:1px solid var(--border);color:var(--td);font-size:10px;font-weight:700;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;cursor:pointer;text-align:left;transition:all .15s;letter-spacing:.04em}
 .rbtn:hover,.rbtn.active{border-color:var(--amber);color:var(--amber);background:var(--aglow)}
-.rbtn .sub{font-size:8px;color:var(--td);font-weight:400;display:block;margin-top:1px}
-/* MAP */
+.rbtn.blue-btn:hover,.rbtn.blue-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(45,224,200,.06)}
+.rbtn .sub{font-size:8px;color:var(--td);font-weight:400;display:block;margin-top:1px;text-transform:none;letter-spacing:0}
 .mc{flex:1;position:relative}
 .mc iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
-.overlay-label{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:10;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);background:rgba(10,12,16,.9);padding:3px 10px;border:1px solid var(--border);pointer-events:none;white-space:nowrap}
-/* GEO PANEL */
-.geo-panel{display:none;position:fixed;top:44px;left:220px;right:0;bottom:0;background:var(--bg0);z-index:50;overflow-y:auto;padding:16px}
-.geo-panel.active{display:block}
+.overlay-label{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:10;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);background:rgba(10,12,16,.92);padding:3px 12px;border:1px solid var(--border);pointer-events:none;white-space:nowrap}
+.mode-badge{position:absolute;top:10px;right:10px;z-index:10;font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 10px;border:1px solid;pointer-events:none}
+.panel{display:none;position:fixed;top:44px;left:210px;right:0;bottom:0;background:var(--bg0);z-index:50;overflow-y:auto;padding:16px}
+.panel.active{display:block}
+.p-t{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .gzone{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--red);padding:12px;margin-bottom:8px}
-.gzone.med{border-left-color:var(--orange)}
+.gzone.med{border-left-color:var(--orange)}.gzone.low{border-left-color:var(--yellow)}
 .gz-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .gz-name{font-size:13px;font-weight:700}
 .rbadge{font-size:8px;font-weight:700;padding:2px 7px;letter-spacing:.1em}
@@ -52,177 +55,305 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
 .rm{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3)}
 .gz-note{font-size:10px;color:var(--td);line-height:1.6;margin-bottom:5px}
 .gz-imp{font-size:10px;color:var(--tp);background:rgba(232,149,42,.07);padding:5px 8px;border-left:2px solid var(--amber)}
-.info-box{background:var(--bg2);border:1px solid var(--border);padding:12px;margin-bottom:8px;font-size:11px;color:var(--td);line-height:1.8}
+.gz-imp.blue{background:rgba(45,224,200,.05);border-left-color:var(--cyan)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .card{background:var(--bg2);border:1px solid var(--border);padding:10px}
 .card-t{font-size:9px;color:var(--td);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
 .card-b{font-size:11px;color:var(--tp);line-height:1.6}
+.info-box{background:var(--bg2);border:1px solid var(--border);padding:12px;margin-bottom:8px;font-size:11px;color:var(--td);line-height:1.8}
+/* flight panel left */
+.flight-lp{display:none}
+.flight-lp.active{display:block}
+.vessel-lp{display:block}
+.vessel-lp.hidden{display:none}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
     <div class="logo">⬡ CRUDE OPS</div>
-    <div class="navtab active" id="tab-map" onclick="showMap(this)">LIVE TRACKING</div>
+    <div class="navtab active" id="tab-vessel" onclick="switchMode('vessel',this)">🚢 VESSELS</div>
+    <div class="navtab blue" id="tab-flight" onclick="switchMode('flight',this)">✈ FLIGHT OPS</div>
     <div class="navtab red" id="tab-geo" onclick="showGeo(this)">⚠ GEO INTEL</div>
     <div class="ml">
       <div class="livebadge">
-        <div class="ldot"></div>
-        <span style="color:var(--green);font-family:'Share Tech Mono',monospace;font-size:10px">LIVE</span>
+        <div class="ldot" id="ldot" style="background:var(--green)"></div>
+        <span id="live-txt" style="color:var(--green);font-family:'Share Tech Mono',monospace;font-size:10px">LIVE</span>
       </div>
       <div class="clock" id="clk">00:00:00 UTC</div>
     </div>
   </div>
-  <div class="body">
-    <!-- LEFT: Region selector -->
-    <div class="lp">
-      <div class="sec">
-        <div class="sec-t">⬡ Select Region</div>
-        <button class="rbtn active" id="r-world" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:3/centery:20/centerx:10/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','World')">
-          🌍 World
-          <span class="sub">All vessels global</span>
-        </button>
-        <button class="rbtn" id="r-india" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:15/centerx:72/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','India Waters')">
-          🇮🇳 India Waters
-          <span class="sub">Arabian Sea + Bay of Bengal</span>
-        </button>
-        <button class="rbtn" id="r-hormuz" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:25.5/centerx:57/maptype:4/shownames:true/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','Hormuz')">
-          🛢 Strait of Hormuz
-          <span class="sub">Persian Gulf crude</span>
-        </button>
-        <button class="rbtn" id="r-bab" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:8/centery:12.5/centerx:43.5/maptype:4/shownames:true/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','Bab el-Mandeb')">
-          ⚠ Bab el-Mandeb
-          <span class="sub">Yemen — Houthi zone</span>
-        </button>
-        <button class="rbtn" id="r-suez" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:28/centerx:34/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','Suez')">
-          ⛵ Suez Canal
-          <span class="sub">Red Sea + Med</span>
-        </button>
-        <button class="rbtn" id="r-malacca" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:3/centerx:103/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','Malacca')">
-          🚢 Strait of Malacca
-          <span class="sub">SE Asia major lane</span>
-        </button>
-        <button class="rbtn" id="r-blacksea" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:43/centerx:34/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','Black Sea')">
-          ⚓ Black Sea
-          <span class="sub">Russia Novorossiysk</span>
-        </button>
-        <button class="rbtn" id="r-westafrica" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:2/centerx:5/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','West Africa')">
-          🛢 West Africa
-          <span class="sub">Nigeria/Angola crude</span>
-        </button>
-        <button class="rbtn" id="r-gulf" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:25/centerx:-90/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','US Gulf')">
-          ⛽ US Gulf Coast
-          <span class="sub">Gulf of Mexico oil</span>
-        </button>
-        <button class="rbtn" id="r-northsea" onclick="setRegion(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:56/centerx:3/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','North Sea')">
-          🌊 North Sea
-          <span class="sub">UK/Norway oil fields</span>
-        </button>
-      </div>
-      <div class="sec">
-        <div class="sec-t">⬡ Legend</div>
-        <div style="font-size:10px;color:var(--td);line-height:2">
-          🔴 Tanker / Oil vessel<br>
-          🟢 Cargo vessel<br>
-          🔵 Passenger / Other<br>
-          ▲ Click vessel = full details<br>
-          🔍 Search = vessel name / MMSI
-        </div>
-      </div>
-      <div class="sec">
-        <div class="sec-t">⬡ Tanker Size</div>
-        <div style="font-size:10px;line-height:2">
-          <span style="color:#ff4500">VLCC</span> = ~2M barrels<br>
-          <span style="color:#ff8c00">SUEZMAX</span> = ~1M barrels<br>
-          <span style="color:var(--amber)">AFRAMAX</span> = ~700K barrels<br>
-          <span style="color:var(--td)">MR</span> = ~300K barrels
-        </div>
-      </div>
-    </div>
 
-    <!-- MAP -->
+  <div class="body">
+    <!-- LEFT PANEL -->
+    <div class="lp" id="left-panel">
+
+      <!-- VESSEL REGIONS -->
+      <div id="vessel-menu">
+        <div class="sec">
+          <div class="sec-t">⬡ Ship Regions</div>
+          <button class="rbtn active" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:3/centery:20/centerx:10/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','🌍 WORLD')">
+            🌍 World<span class="sub">All vessels global</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:15/centerx:72/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','🇮🇳 INDIA WATERS')">
+            🇮🇳 India Waters<span class="sub">Arabian Sea + Bay of Bengal</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:25.5/centerx:57/maptype:4/shownames:true/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','🛢 HORMUZ')">
+            🛢 Strait of Hormuz<span class="sub">Persian Gulf crude</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:8/centery:12.5/centerx:43.5/maptype:4/shownames:true/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','⚠ BAB EL-MANDEB')">
+            ⚠ Bab el-Mandeb<span class="sub">Yemen — Houthi zone</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:28/centerx:34/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','⛵ SUEZ CANAL')">
+            ⛵ Suez Canal<span class="sub">Red Sea + Mediterranean</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:3/centerx:103/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','🚢 MALACCA')">
+            🚢 Strait of Malacca<span class="sub">SE Asia major lane</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:43/centerx:34/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','⚓ BLACK SEA')">
+            ⚓ Black Sea<span class="sub">Russia Novorossiysk</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:2/centerx:5/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','🛢 WEST AFRICA')">
+            🛢 West Africa<span class="sub">Nigeria/Angola crude</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:25/centerx:-90/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','⛽ US GULF')">
+            ⛽ US Gulf Coast<span class="sub">Gulf of Mexico oil</span>
+          </button>
+          <button class="rbtn" onclick="setVessel(this,'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:56/centerx:3/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false','🌊 NORTH SEA')">
+            🌊 North Sea<span class="sub">UK/Norway oil fields</span>
+          </button>
+        </div>
+        <div class="sec">
+          <div class="sec-t">⬡ Legend</div>
+          <div style="font-size:10px;color:var(--td);line-height:2">
+            🔴 Tanker / Oil vessel<br>
+            🟢 Cargo vessel<br>
+            🔵 Passenger / Other<br>
+            ▲ Click vessel = full info
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sec-t">⬡ Tanker Size</div>
+          <div style="font-size:10px;line-height:2.1">
+            <span style="color:#ff4500">VLCC</span> = ~2M barrels<br>
+            <span style="color:#ff8c00">SUEZMAX</span> = ~1M barrels<br>
+            <span style="color:var(--amber)">AFRAMAX</span> = ~700K barrels<br>
+            <span style="color:var(--td)">MR</span> = ~300K barrels
+          </div>
+        </div>
+      </div>
+
+      <!-- FLIGHT REGIONS -->
+      <div id="flight-menu" style="display:none">
+        <div class="sec">
+          <div class="sec-t blue">✈ Flight Regions</div>
+          <button class="rbtn blue-btn active" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=20&lon=10&zoom=3','🌍 WORLD')">
+            🌍 World<span class="sub">All aircraft global</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=20&lon=77&zoom=5','🇮🇳 INDIA')">
+            🇮🇳 India Airspace<span class="sub">All Indian flights</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=28.6&lon=77.2&zoom=9','🏙 Delhi NCR')">
+            🏙 Delhi — IGI<span class="sub">VIDP airport area</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=19.1&lon=72.9&zoom=9','🏙 Mumbai')">
+            🏙 Mumbai — CSIA<span class="sub">VABB airport area</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=25&lon=52&zoom=6','🛢 Persian Gulf')">
+            🛢 Persian Gulf<span class="sub">Dubai / Riyadh / Tehran</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=51.5&lon=0&zoom=7','🇬🇧 London')">
+            🇬🇧 London — Heathrow<span class="sub">World's busiest</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=40.7&lon=-74&zoom=7','🇺🇸 New York')">
+            🇺🇸 New York — JFK<span class="sub">JFK / Newark / LGA</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=35&lon=136&zoom=5','🇯🇵 Japan')">
+            🇯🇵 Japan / China<span class="sub">East Asia air traffic</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=1.3&lon=103.8&zoom=9','🇸🇬 Singapore')">
+            🇸🇬 Singapore — Changi<span class="sub">WSSS — Asia hub</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=50&lon=10&zoom=5','🇪🇺 Europe')">
+            🇪🇺 Europe<span class="sub">Frankfurt / Paris / Amsterdam</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=33&lon=44&zoom=6','⚠ Iraq / Syria')">
+            ⚠ Iraq / Syria<span class="sub">Conflict zone airspace</span>
+          </button>
+          <button class="rbtn blue-btn" onclick="setFlight(this,'https://globe.adsbexchange.com/?lat=48&lon=32&zoom=6','⚠ Ukraine')">
+            ⚠ Ukraine War Zone<span class="sub">NOTAM / airspace closure</span>
+          </button>
+        </div>
+        <div class="sec">
+          <div class="sec-t blue">⬡ Legend</div>
+          <div style="font-size:10px;color:var(--td);line-height:2">
+            ✈ Yellow = Commercial jet<br>
+            ✈ Blue = Military / Special<br>
+            ✈ Green = Private / GA<br>
+            ✈ Red = Emergency<br>
+            Click aircraft = full details
+          </div>
+        </div>
+        <div class="sec">
+          <div class="sec-t blue">⬡ Data Source</div>
+          <div style="font-size:9px;color:var(--td);line-height:1.8">
+            ADS-B Exchange<br>
+            <span style="color:var(--cyan)">Open Source</span> — no filter<br>
+            Incl. military aircraft<br>
+            Real transponder data
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end lp -->
+
+    <!-- MAP AREA -->
     <div class="mc" id="mc">
       <div class="overlay-label" id="region-label">🌍 WORLD — All Vessels</div>
-      <iframe id="mt-frame"
+      <div class="mode-badge" id="mode-badge" style="color:var(--amber);border-color:rgba(232,149,42,.4);background:rgba(232,149,42,.08)">⚓ VESSEL MODE</div>
+      <iframe id="main-frame"
         src="https://www.marinetraffic.com/en/ais/embed/zoom:3/centery:20/centerx:10/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false"
         allowfullscreen>
       </iframe>
     </div>
-  </div>
-</div>
+
+  </div><!-- end body -->
+</div><!-- end app -->
 
 <!-- GEO INTEL PANEL -->
-<div class="geo-panel" id="geo-panel">
+<div class="panel" id="geo-panel">
   <div style="max-width:900px;margin:0 auto">
-    <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border)">⚠ GEOPOLITICAL CRUDE RISK ZONES</div>
+
+    <div class="p-t" style="color:var(--amber)">⚠ GEOPOLITICAL CRUDE RISK ZONES — CLICK REGION TO TRACK</div>
 
     <div class="gzone">
       <div class="gz-head"><div class="gz-name" style="color:#e83a3a">🛢 Strait of Hormuz</div><span class="rbadge rc">CRITICAL</span></div>
-      <div class="gz-note">Iran-US tensions ongoing. 20% of global crude + 17% LNG transit daily. Any naval incident = $15–30/bbl instant spike. IRGC harassment of tankers continues.</div>
-      <div class="gz-imp">🇮🇳 India: ~40% of crude via Hormuz. BPCL/IOC/HPCL most exposed. Nifty Energy sells off hard on any escalation.</div>
+      <div class="gz-note">Iran-US tensions. 20% of global crude + 17% LNG daily transit. IRGC vessel harassment ongoing. Any naval incident = $15–30/bbl spike.</div>
+      <div class="gz-imp">🇮🇳 India: ~40% of crude via Hormuz. BPCL / IOC / HPCL most exposed. Nifty Energy sells off hard on any escalation.</div>
     </div>
 
     <div class="gzone">
       <div class="gz-head"><div class="gz-name" style="color:#ff4500">⚠ Bab el-Mandeb / Yemen</div><span class="rbadge rc">CRITICAL</span></div>
-      <div class="gz-note">Active Houthi missile & drone attacks on commercial vessels. Suez Canal traffic down ~50%. Most major tankers now rerouting via Cape of Good Hope (+10–14 days).</div>
-      <div class="gz-imp">🇮🇳 India: Tanker day-rates +300%. India importers pay $2–4/bbl extra freight. Red Sea war risk insurance premium spiked 10x.</div>
+      <div class="gz-note">Active Houthi missile & drone attacks. Suez Canal traffic down ~50%. VLCC/Suezmax rerouting via Cape of Good Hope (+10–14 days).</div>
+      <div class="gz-imp">🇮🇳 India: Tanker day-rates +300%. India importers pay $2–4/bbl extra freight. Red Sea war risk insurance premium 10x.</div>
     </div>
 
     <div class="gzone med">
       <div class="gz-head"><div class="gz-name" style="color:#f97316">⛵ Suez Canal / Red Sea</div><span class="rbadge rh">HIGH</span></div>
-      <div class="gz-note">Houthi threat forces Cape of Good Hope diversion for majority of VLCC/Suezmax traffic. Egyptian canal revenue collapsed.</div>
-      <div class="gz-imp">🇮🇳 India: Europe-India route now +14 days. WTI-Brent spread widens. West Africa crude freight to India rises sharply.</div>
+      <div class="gz-note">Houthi threat forces Cape diversion. Egyptian canal revenue collapsed. Alternative route adds 14 days for Europe-Asia trade.</div>
+      <div class="gz-imp">🇮🇳 India: Europe-India route +14 days. WTI-Brent spread widens. West Africa crude freight rises.</div>
     </div>
 
     <div class="gzone med">
       <div class="gz-head"><div class="gz-name" style="color:#f97316">⚓ Black Sea — Russia</div><span class="rbadge rh">HIGH</span></div>
-      <div class="gz-note">Russia-Ukraine war ongoing. Novorossiysk terminal exports ~1.5 mb/d. G7 price cap on Russian crude at $60/bbl. Shadow fleet operating.</div>
-      <div class="gz-imp">🇮🇳 India: Urals crude at $12–15 discount vs Brent. India imported ~35–40% from Russia in 2024. Any escalation risks this cheap supply.</div>
+      <div class="gz-note">Russia-Ukraine war ongoing. Novorossiysk ~1.5 mb/d exports. G7 price cap at $60/bbl. Shadow fleet operating via Turkish straits.</div>
+      <div class="gz-imp">🇮🇳 India: Urals at -$12–15 vs Brent. India ~35–40% imports from Russia. Escalation risks this cheap supply.</div>
     </div>
 
     <div class="gzone med">
       <div class="gz-head"><div class="gz-name" style="color:#f97316">🚢 Strait of Malacca</div><span class="rbadge rm">MEDIUM</span></div>
-      <div class="gz-note">80% of China and Japan crude imports transit here. Piracy risk. Congestion near Singapore anchorage. Alternative via Lombok Strait.</div>
-      <div class="gz-imp">🇮🇳 India: Asian crude premium surge if disrupted. East coast refinery (Chennai, Vizag) costs rise. SGX crude futures spike.</div>
+      <div class="gz-note">80% of China/Japan crude transits here. Piracy risk. Congestion near Singapore anchorage. Alternative via Lombok Strait.</div>
+      <div class="gz-imp">🇮🇳 India: Asian crude premium surge if disrupted. East coast refinery costs rise. SGX futures spike.</div>
     </div>
 
     <div class="gzone med">
-      <div class="gz-head"><div class="gz-name" style="color:#f97316">⛽ Persian Gulf (OPEC core)</div><span class="rbadge rh">HIGH</span></div>
-      <div class="gz-note">Iraq, Kuwait, Saudi Arabia, UAE, Iran — all major loading terminals. OPEC+ production cut decisions originate here. Saudi Aramco OSP set monthly.</div>
-      <div class="gz-imp">🇮🇳 India: Saudi OSP changes directly hit BPCL/IOC refinery margins. Kuwait/Iraq crude = primary source for Indian refineries.</div>
+      <div class="gz-head"><div class="gz-name" style="color:#f97316">⛽ Persian Gulf — OPEC Core</div><span class="rbadge rh">HIGH</span></div>
+      <div class="gz-note">Iraq, Kuwait, Saudi Arabia, UAE, Iran loading terminals. OPEC+ production decisions here. Saudi Aramco OSP set monthly.</div>
+      <div class="gz-imp">🇮🇳 India: Saudi OSP directly hits BPCL/IOC margins. Kuwait/Iraq = primary source for Indian refineries.</div>
     </div>
 
-    <div style="font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--amber);text-transform:uppercase;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">⬡ INDIA CRUDE — MARKET IMPACT MATRIX</div>
+    <!-- FLIGHT GEO -->
+    <div class="p-t" style="color:var(--cyan);margin-top:20px">✈ FLIGHT RISK ZONES — ACTIVE NOTAM / AIRSPACE CLOSURES</div>
 
-    <div class="info-box" style="margin-bottom:12px">
-      🇮🇳 India imports <span style="color:var(--amber)">~88% of crude oil</span> requirements (~4.5 mb/d). Any Gulf disruption = direct INR depreciation + CPI inflation + OMC margin destruction + fiscal deficit pressure.
+    <div class="gzone">
+      <div class="gz-head"><div class="gz-name" style="color:var(--cyan)">⚠ Ukraine / Russia Airspace</div><span class="rbadge rc">CLOSED</span></div>
+      <div class="gz-note">Ukrainian and Russian airspace completely closed since Feb 2022. All commercial flights rerouted adding 2–4 hrs to Europe-Asia routes.</div>
+      <div class="gz-imp blue">🇮🇳 India: Air India / IndiGo Europe routes 3–4 hrs longer. Ticket prices elevated. Fuel burn +15%.</div>
+    </div>
+
+    <div class="gzone">
+      <div class="gz-head"><div class="gz-name" style="color:var(--cyan)">⚠ Iraq / Iran / Syria</div><span class="rbadge rh">HIGH RISK</span></div>
+      <div class="gz-note">Active conflict zones. Iraqi and Syrian airspace has NOTAM restrictions. Iranian airspace restricted for Western carriers.</div>
+      <div class="gz-imp blue">🇮🇳 India: Gulf carriers (Emirates, Etihad, Qatar) use alternate corridors. India-Middle East flights minimally affected.</div>
+    </div>
+
+    <div class="gzone med">
+      <div class="gz-head"><div class="gz-name" style="color:var(--cyan)">⚠ Pakistan — India Border</div><span class="rbadge rh">PERIODIC</span></div>
+      <div class="gz-note">Pakistan periodically closes airspace to Indian carriers. Affects India-Europe western corridor routing over Pakistan.</div>
+      <div class="gz-imp blue">🇮🇳 India: Air India forced to reroute via Arabian Sea. Adds 1–2 hrs to UK/Europe flights. Fuel cost spike.</div>
+    </div>
+
+    <!-- MARKET IMPACT -->
+    <div class="p-t" style="color:var(--amber);margin-top:20px">⬡ INDIA CRUDE — MARKET IMPACT MATRIX</div>
+
+    <div class="info-box">
+      🇮🇳 India imports <span style="color:var(--amber)">~88% of crude</span> (~4.5 mb/d). Any Gulf disruption = INR depreciation + CPI inflation + OMC margin destruction + fiscal deficit pressure.
     </div>
 
     <div class="grid2">
       <div class="card"><div class="card-t">Brent +$5/bbl</div><div class="card-b">OMC margins compress ~₹2/lit. BPCL/IOC/HPCL inventory loss if price hike delayed.</div></div>
-      <div class="card"><div class="card-t">INR Impact</div><div class="card-b">+$10/bbl → INR depreciates ~₹0.5–0.8/USD. CAD widens ~0.3% of GDP.</div></div>
-      <div class="card"><div class="card-t">OMC Stocks</div><div class="card-b">Watch Gross Refinery Margin (GRM). Healthy above $8/bbl. Under-recovery kills stock price.</div></div>
-      <div class="card"><div class="card-t">Shipping Stocks</div><div class="card-b">Cape rerouting = tanker day-rates +200–400%. GE Shipping, Essar Shipping benefit.</div></div>
-      <div class="card"><div class="card-t">Nifty Energy</div><div class="card-b">Crude spike → OMCs sell off. But ONGC/Oil India gain on upstream realization rise.</div></div>
-      <div class="card"><div class="card-t">Inflation / RBI</div><div class="card-b">+$15/bbl crude = CPI +40–60bps. RBI rate cut plans get delayed. Bond yields rise.</div></div>
+      <div class="card"><div class="card-t">INR Impact</div><div class="card-b">+$10/bbl → INR depreciates ~₹0.5–0.8/USD. CAD widens ~0.3% GDP. RBI pressure.</div></div>
+      <div class="card"><div class="card-t">OMC Stocks</div><div class="card-b">Watch GRM — healthy above $8/bbl. Under-recovery kills BPCL/IOC stock price.</div></div>
+      <div class="card"><div class="card-t">Shipping Stocks</div><div class="card-b">Cape rerouting = tanker day-rates +200–400%. GE Shipping benefits directly.</div></div>
+      <div class="card"><div class="card-t">Nifty Energy</div><div class="card-b">Crude spike → OMCs sell off. ONGC/Oil India gain on upstream realization.</div></div>
+      <div class="card"><div class="card-t">Aviation Impact</div><div class="card-b">Jet fuel = 40% of airline cost. Crude +$10 → IndiGo/Air India margin -8–12%.</div></div>
     </div>
+
   </div>
 </div>
 
 <script>
-let currentRegion = '🌍 WORLD — All Vessels';
+let mode = 'vessel'; // vessel or flight
 
-function setRegion(btn, url, name){
-  document.querySelectorAll('.rbtn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('mt-frame').src = url;
-  document.getElementById('region-label').textContent = '📍 ' + name.toUpperCase() + ' — Live Vessels';
-}
-
-function showMap(btn){
+function switchMode(m, btn){
+  mode = m;
+  document.getElementById('geo-panel').classList.remove('active');
   document.querySelectorAll('.navtab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('geo-panel').classList.remove('active');
+
+  if(m === 'vessel'){
+    document.getElementById('vessel-menu').style.display='block';
+    document.getElementById('flight-menu').style.display='none';
+    const badge=document.getElementById('mode-badge');
+    badge.textContent='⚓ VESSEL MODE';
+    badge.style.color='var(--amber)';
+    badge.style.borderColor='rgba(232,149,42,.4)';
+    badge.style.background='rgba(232,149,42,.08)';
+    document.getElementById('ldot').style.background='var(--green)';
+    document.getElementById('live-txt').style.color='var(--green)';
+    // load first vessel region
+    setVessel(document.querySelector('#vessel-menu .rbtn'),
+      'https://www.marinetraffic.com/en/ais/embed/zoom:3/centery:20/centerx:10/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false',
+      '🌍 WORLD');
+  } else {
+    document.getElementById('vessel-menu').style.display='none';
+    document.getElementById('flight-menu').style.display='block';
+    const badge=document.getElementById('mode-badge');
+    badge.textContent='✈ FLIGHT MODE';
+    badge.style.color='var(--cyan)';
+    badge.style.borderColor='rgba(45,224,200,.4)';
+    badge.style.background='rgba(45,224,200,.06)';
+    document.getElementById('ldot').style.background='var(--cyan)';
+    document.getElementById('live-txt').style.color='var(--cyan)';
+    // load world flight
+    setFlight(document.querySelector('#flight-menu .rbtn'),
+      'https://globe.adsbexchange.com/?lat=20&lon=10&zoom=3',
+      '🌍 WORLD');
+  }
+}
+
+function setVessel(btn, url, name){
+  document.querySelectorAll('#vessel-menu .rbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('main-frame').src = url;
+  document.getElementById('region-label').textContent = name + ' — Live Vessels';
+}
+
+function setFlight(btn, url, name){
+  document.querySelectorAll('#flight-menu .rbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('main-frame').src = url;
+  document.getElementById('region-label').textContent = name + ' — Live Aircraft';
 }
 
 function showGeo(btn){
@@ -231,6 +362,7 @@ function showGeo(btn){
   document.getElementById('geo-panel').classList.add('active');
 }
 
+// UTC clock
 setInterval(()=>{
   const n=new Date();
   document.getElementById('clk').textContent=
