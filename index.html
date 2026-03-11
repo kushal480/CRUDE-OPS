@@ -10,7 +10,7 @@
   --bg0:#050608;--bg1:#0a0c10;--bg2:#0f1117;
   --amber:#e8952a;--aglow:rgba(232,149,42,0.14);
   --cyan:#2de0c8;--red:#e83a3a;--green:#2de87a;
-  --yellow:#fbbf24;--orange:#f97316;--purple:#a855f7;
+  --yellow:#fbbf24;--orange:#f97316;
   --tp:#e8e4d8;--td:#6b7280;--border:rgba(232,149,42,0.18);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -24,7 +24,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
 .navtab.tred{color:var(--red)}.navtab.tred.active{color:var(--red);border-color:rgba(232,58,58,.4);background:rgba(232,58,58,.08)}
 .navtab.tgreen{color:var(--green)}.navtab.tgreen.active{color:var(--green);border-color:rgba(45,232,122,.4);background:rgba(45,232,122,.06)}
 .ml{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
-.livebadge{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:10px}
+.livebadge{display:flex;align-items:center;gap:5px}
 .ldot{width:7px;height:7px;border-radius:50%;animation:blink 1.5s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .clock{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--td)}
@@ -63,13 +63,15 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
 .news-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .news-header{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--bg1)}
 .news-title{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+.news-controls{display:flex;align-items:center;gap:8px}
 .news-refresh{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td);cursor:pointer;padding:4px 10px;border:1px solid var(--border);background:var(--bg2);transition:all .15s}
 .news-refresh:hover{border-color:var(--amber);color:var(--amber)}
-.news-scroll{flex:1;overflow-y:auto;padding:12px 14px}
+.news-count{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--td)}
+.news-scroll{flex:1;overflow-y:auto;padding:10px 14px}
 .news-scroll::-webkit-scrollbar{width:3px}.news-scroll::-webkit-scrollbar-thumb{background:var(--border)}
-.news-loading{text-align:center;padding:50px 20px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td);line-height:1.9}
-.news-grid{display:flex;flex-direction:column;gap:7px}
-.news-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--amber);padding:11px 13px;cursor:pointer;transition:all .15s;text-decoration:none;display:block}
+.news-loading{text-align:center;padding:50px 20px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--td);line-height:2}
+.news-grid{display:flex;flex-direction:column;gap:6px}
+.news-card{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--amber);padding:10px 12px;cursor:pointer;transition:all .15s;text-decoration:none;display:block}
 .news-card:hover{border-color:var(--amber);background:var(--aglow)}
 .news-card.crude-card{border-left-color:#ff6b35}.news-card.crude-card:hover{background:rgba(255,107,53,.06)}
 .news-card.gas-card{border-left-color:var(--cyan)}.news-card.gas-card:hover{background:rgba(45,224,200,.05)}
@@ -77,14 +79,19 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
 .news-card.india-card{border-left-color:var(--green)}.news-card.india-card:hover{background:rgba(45,232,122,.05)}
 .nc-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
 .nc-title{font-size:12px;font-weight:700;line-height:1.35;color:var(--tp)}
-.nc-src{font-size:8px;font-weight:700;letter-spacing:.08em;padding:1px 5px;white-space:nowrap;flex-shrink:0;margin-top:2px;text-transform:uppercase}
-.nc-src.crude-src{color:#ff6b35;border:1px solid rgba(255,107,53,.4)}
-.nc-src.gas-src{color:var(--cyan);border:1px solid rgba(45,224,200,.3)}
-.nc-src.war-src{color:var(--red);border:1px solid rgba(232,58,58,.4)}
-.nc-src.india-src{color:var(--green);border:1px solid rgba(45,232,122,.3)}
-.nc-src.def-src{color:var(--amber);border:1px solid var(--border)}
+.nc-src{font-size:8px;font-weight:700;letter-spacing:.08em;padding:1px 6px;white-space:nowrap;flex-shrink:0;margin-top:2px;text-transform:uppercase;border:1px solid}
+.nc-src.crude-src{color:#ff6b35;border-color:rgba(255,107,53,.4)}
+.nc-src.gas-src{color:var(--cyan);border-color:rgba(45,224,200,.3)}
+.nc-src.war-src{color:var(--red);border-color:rgba(232,58,58,.4)}
+.nc-src.india-src{color:var(--green);border-color:rgba(45,232,122,.3)}
+.nc-src.def-src{color:var(--amber);border-color:var(--border)}
 .nc-desc{font-size:10px;color:var(--td);line-height:1.5;margin-bottom:4px}
+.nc-foot{display:flex;align-items:center;gap:10px}
 .nc-time{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--td)}
+.nc-fresh{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border-radius:2px}
+.fresh-new{color:var(--green);background:rgba(45,232,122,.12);border:1px solid rgba(45,232,122,.3)}
+.fresh-recent{color:var(--amber);background:rgba(232,149,42,.1);border:1px solid rgba(232,149,42,.2)}
+.fresh-old{color:var(--td);border:1px solid var(--border)}
 .nc-err{text-align:center;padding:40px 20px;color:var(--td);font-size:11px;line-height:2}
 /* GEO */
 .geo-scroll{flex:1;overflow-y:auto;padding:14px}
@@ -128,25 +135,25 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
     </div>
   </div>
 
-  <!-- TICKER BAR — all free TVC symbols -->
+  <!-- TICKER — all free symbols -->
   <div class="ticker-bar">
     <div class="tradingview-widget-container" style="height:36px">
       <div class="tradingview-widget-container__widget"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
       {
         "symbols":[
-          {"proName":"TVC:UKOIL",      "title":"Brent Crude"},
-          {"proName":"TVC:USOIL",      "title":"WTI Crude"},
-          {"proName":"TVC:NATURALGAS", "title":"Nat Gas"},
-          {"proName":"FX_IDC:USDINR",  "title":"USD/INR"},
-          {"proName":"TVC:GOLD",       "title":"Gold"},
-          {"proName":"TVC:DXY",        "title":"USD Index"},
-          {"proName":"NSE:ONGC",       "title":"ONGC"},
-          {"proName":"NSE:BPCL",       "title":"BPCL"},
-          {"proName":"NSE:IOC",        "title":"IOC"},
-          {"proName":"NSE:HINDPETRO",  "title":"HPCL"},
-          {"proName":"NSE:GESHIP",     "title":"GE Ship"},
-          {"proName":"NSE:NIFTY50",    "title":"NIFTY 50"}
+          {"proName":"TVC:UKOIL",          "title":"Brent Crude"},
+          {"proName":"TVC:USOIL",          "title":"WTI Crude"},
+          {"proName":"CAPITALCOM:NATURALGAS","title":"Nat Gas"},
+          {"proName":"FX_IDC:USDINR",      "title":"USD/INR"},
+          {"proName":"TVC:GOLD",           "title":"Gold"},
+          {"proName":"TVC:DXY",            "title":"USD Index"},
+          {"proName":"NSE:ONGC",           "title":"ONGC"},
+          {"proName":"NSE:BPCL",           "title":"BPCL"},
+          {"proName":"NSE:IOC",            "title":"IOC"},
+          {"proName":"NSE:HINDPETRO",      "title":"HPCL"},
+          {"proName":"NSE:GESHIP",         "title":"GE Ship"},
+          {"proName":"NSE:NIFTY50",        "title":"NIFTY 50"}
         ],
         "showSymbolLogo":false,
         "isTransparent":true,
@@ -210,7 +217,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
         </div>
         <div class="sec">
           <div class="sec-t blue">⬡ Source</div>
-          <div style="font-size:9px;color:var(--td);line-height:1.9">ADS-B Exchange<br><span style="color:var(--cyan)">Open Source</span> — no filter<br>Incl. military aircraft<br>Real transponder data</div>
+          <div style="font-size:9px;color:var(--td);line-height:1.9">ADS-B Exchange<br><span style="color:var(--cyan)">Open Source</span><br>Incl. military<br>Real transponder</div>
         </div>
       </div>
 
@@ -227,11 +234,16 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
         </div>
         <div class="sec">
           <div class="sec-t green">⬡ Info</div>
-          <div style="font-size:9px;color:var(--td);line-height:1.9">Google News + OilPrice<br>Auto-refresh <span style="color:var(--green)">5 min</span><br>Click = full article</div>
+          <div style="font-size:9px;color:var(--td);line-height:1.9">
+            Reuters · BBC · ET · OilPrice<br>
+            Auto-refresh <span style="color:var(--green)">5 min</span><br>
+            Sorted: <span style="color:var(--green)">newest first</span><br>
+            Click = full article
+          </div>
         </div>
       </div>
 
-    </div><!-- end lp -->
+    </div>
 
     <!-- MAP -->
     <div class="mc" id="mc">
@@ -241,29 +253,31 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
         src="https://www.marinetraffic.com/en/ais/embed/zoom:3/centery:20/centerx:10/maptype:4/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:/showmenu:/remember:false"
         allowfullscreen></iframe>
     </div>
-
-  </div><!-- end body -->
-</div><!-- end app -->
+  </div>
+</div>
 
 <!-- NEWS PANEL -->
 <div class="panel" id="news-panel">
   <div class="news-wrap">
     <div class="news-sidebar">
-      <div style="padding:8px 11px;font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--green);text-transform:uppercase;border-bottom:1px solid var(--border);margin-bottom:6px">📰 FEED</div>
-      <div class="ncat crude active" id="ncat-crude" onclick="loadNews('crude',null,this)"><span class="ncat-icon">🛢</span>Crude Oil<span class="ncat-sub">Brent, WTI, OPEC</span></div>
-      <div class="ncat gas"          id="ncat-gas"   onclick="loadNews('gas',null,this)"><span class="ncat-icon">🔥</span>Natural Gas<span class="ncat-sub">LNG, supply, price</span></div>
-      <div class="ncat war"          id="ncat-war"   onclick="loadNews('war',null,this)"><span class="ncat-icon">⚔️</span>US-Iran / War<span class="ncat-sub">Geopolitical</span></div>
-      <div class="ncat india"        id="ncat-india" onclick="loadNews('india',null,this)"><span class="ncat-icon">🇮🇳</span>India Energy<span class="ncat-sub">BPCL, IOC, ONGC</span></div>
-      <div class="ncat"              id="ncat-opec"  onclick="loadNews('opec',null,this)"><span class="ncat-icon">🏛</span>OPEC+<span class="ncat-sub">Production cuts</span></div>
+      <div style="padding:8px 11px;font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--green);text-transform:uppercase;border-bottom:1px solid var(--border);margin-bottom:6px">📰 LIVE FEED</div>
+      <div class="ncat crude active" id="ncat-crude"  onclick="loadNews('crude',null,this)"><span class="ncat-icon">🛢</span>Crude Oil<span class="ncat-sub">Brent, WTI, OPEC</span></div>
+      <div class="ncat gas"          id="ncat-gas"    onclick="loadNews('gas',null,this)"><span class="ncat-icon">🔥</span>Natural Gas<span class="ncat-sub">LNG, supply, price</span></div>
+      <div class="ncat war"          id="ncat-war"    onclick="loadNews('war',null,this)"><span class="ncat-icon">⚔️</span>US-Iran / War<span class="ncat-sub">Geopolitical</span></div>
+      <div class="ncat india"        id="ncat-india"  onclick="loadNews('india',null,this)"><span class="ncat-icon">🇮🇳</span>India Energy<span class="ncat-sub">BPCL, IOC, ONGC</span></div>
+      <div class="ncat"              id="ncat-opec"   onclick="loadNews('opec',null,this)"><span class="ncat-icon">🏛</span>OPEC+<span class="ncat-sub">Production cuts</span></div>
       <div class="ncat war"          id="ncat-houthi" onclick="loadNews('houthi',null,this)"><span class="ncat-icon">🚨</span>Houthi / Red Sea<span class="ncat-sub">Yemen, shipping</span></div>
     </div>
     <div class="news-main">
       <div class="news-header">
         <div class="news-title" id="news-panel-title" style="color:#ff6b35">🛢 CRUDE OIL — Latest News</div>
-        <button class="news-refresh" onclick="refreshNews()">↻ REFRESH</button>
+        <div class="news-controls">
+          <span class="news-count" id="news-count"></span>
+          <button class="news-refresh" onclick="refreshNews()">↻ REFRESH</button>
+        </div>
       </div>
       <div class="news-scroll">
-        <div id="news-content"><div class="news-loading"><div style="font-size:28px;margin-bottom:10px">📡</div>Loading news...</div></div>
+        <div id="news-content"><div class="news-loading"><div style="font-size:32px;margin-bottom:12px">📡</div>Initializing feed...</div></div>
       </div>
     </div>
   </div>
@@ -298,36 +312,68 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Barlow Condensed',
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-// NEWS ENGINE — 3 proxy fallback
-// ═══════════════════════════════════════════
-const FEEDS = {
-  crude:  'https://oilprice.com/rss/main',
-  gas:    'https://oilprice.com/rss/main',
-  war:    'https://news.google.com/rss/search?q=US+Iran+war+oil+Hormuz+sanctions&hl=en-US&gl=US&ceid=US:en',
-  india:  'https://economictimes.indiatimes.com/industry/energy/rssfeeds/13358575.cms',
-  opec:   'https://news.google.com/rss/search?q=OPEC+production+cut+oil+supply&hl=en-US&gl=US&ceid=US:en',
-  houthi: 'https://news.google.com/rss/search?q=Houthi+Red+Sea+attack+shipping+tanker&hl=en-US&gl=US&ceid=US:en',
+// ════════════════════════════════════════════════
+// NEWS ENGINE — Multi-source, sorted newest first
+// ════════════════════════════════════════════════
+
+// Multiple RSS sources per category — merged & sorted
+const CAT_SOURCES = {
+  crude: [
+    'https://feeds.bbci.co.uk/news/business/rss.xml',
+    'https://oilprice.com/rss/main',
+    'https://feeds.reuters.com/reuters/businessNews',
+  ],
+  gas: [
+    'https://oilprice.com/rss/main',
+    'https://feeds.bbci.co.uk/news/business/rss.xml',
+  ],
+  war: [
+    'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml',
+    'https://feeds.reuters.com/Reuters/worldNews',
+    'https://feeds.bbci.co.uk/news/world/rss.xml',
+  ],
+  india: [
+    'https://economictimes.indiatimes.com/industry/energy/rssfeeds/13358575.cms',
+    'https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms',
+    'https://feeds.bbci.co.uk/news/world/south_asia/rss.xml',
+  ],
+  opec: [
+    'https://oilprice.com/rss/main',
+    'https://feeds.bbci.co.uk/news/business/rss.xml',
+    'https://feeds.reuters.com/reuters/businessNews',
+  ],
+  houthi: [
+    'https://feeds.bbci.co.uk/news/world/middle_east/rss.xml',
+    'https://feeds.reuters.com/Reuters/worldNews',
+  ],
 };
-const FEED_KW = {
-  crude:['crude','oil','brent','wti','barrel','opec','petroleum'],
-  gas:  ['gas','lng','natural','pipeline'],
+
+// Keywords to filter relevant articles per category
+const CAT_KW = {
+  crude:  ['crude','oil','brent','wti','barrel','petroleum','opec','energy price','oil price'],
+  gas:    ['natural gas','lng','gas price','pipeline','gas supply','gas market'],
+  war:    ['iran','hormuz','sanction','middle east','nuclear','tehran','war','attack','missile','israel','trump iran'],
+  india:  ['india','bpcl','ioc','ongc','hindpetro','hpcl','indian oil','petroleum india','refinery india'],
+  opec:   ['opec','production cut','oil supply','barrel','quota','saudi arabia oil','oil output'],
+  houthi: ['houthi','red sea','yemen','shipping attack','tanker attack','bab el-mandeb','suez'],
 };
+
 const FEED_META = {
-  crude:  {label:'🛢 CRUDE OIL',        color:'#ff6b35',      cls:'crude'},
-  gas:    {label:'🔥 NATURAL GAS',      color:'var(--cyan)',   cls:'gas'},
-  war:    {label:'⚔️ US-IRAN / WAR',    color:'var(--red)',    cls:'war'},
-  india:  {label:'🇮🇳 INDIA ENERGY',   color:'var(--green)',  cls:'india'},
-  opec:   {label:'🏛 OPEC+',            color:'var(--amber)',  cls:'crude'},
-  houthi: {label:'🚨 HOUTHI / RED SEA', color:'var(--red)',    cls:'war'},
+  crude:  {label:'🛢 CRUDE OIL',        color:'#ff6b35',     cls:'crude'},
+  gas:    {label:'🔥 NATURAL GAS',      color:'var(--cyan)', cls:'gas'},
+  war:    {label:'⚔️ US-IRAN / WAR',    color:'var(--red)',  cls:'war'},
+  india:  {label:'🇮🇳 INDIA ENERGY',   color:'var(--green)',cls:'india'},
+  opec:   {label:'🏛 OPEC+',            color:'var(--amber)',cls:'crude'},
+  houthi: {label:'🚨 HOUTHI / RED SEA', color:'var(--red)',  cls:'war'},
 };
-const FALLBACK_LINKS = {
+
+const FALLBACK = {
   crude:  [['https://oilprice.com','OilPrice.com'],['https://www.reuters.com/business/energy/','Reuters Energy']],
   gas:    [['https://oilprice.com','OilPrice.com'],['https://www.naturalgasintel.com','NGI']],
-  war:    [['https://www.reuters.com/world/middle-east/','Reuters M.East'],['https://www.aljazeera.com/tag/iran/','Al Jazeera Iran']],
-  india:  [['https://economictimes.indiatimes.com/industry/energy','ET Energy'],['https://www.livemint.com/industry/energy','LiveMint Energy']],
+  war:    [['https://www.bbc.com/news/world/middle_east','BBC Middle East'],['https://www.reuters.com/world/middle-east/','Reuters']],
+  india:  [['https://economictimes.indiatimes.com/industry/energy','ET Energy'],['https://www.livemint.com/industry/energy','LiveMint']],
   opec:   [['https://www.opec.org/opec_web/en/press_room/483.htm','OPEC Official'],['https://oilprice.com','OilPrice.com']],
-  houthi: [['https://www.reuters.com/world/middle-east/','Reuters'],['https://www.bbc.com/news/world-middle-east','BBC M.East']],
+  houthi: [['https://www.bbc.com/news/world/middle_east','BBC Middle East'],['https://www.reuters.com/world/middle-east/','Reuters']],
 };
 
 let currentCat='crude', newsTimer=null;
@@ -335,52 +381,99 @@ let currentCat='crude', newsTimer=null;
 function parseRSS(xml){
   try{
     const doc=new DOMParser().parseFromString(xml,'text/xml');
-    const items=Array.from(doc.querySelectorAll('item'));
-    if(!items.length)return null;
-    return items.slice(0,25).map(item=>{
-      let link=item.querySelector('link')?.textContent
-              ||item.querySelector('link')?.nextSibling?.nodeValue
-              ||item.querySelector('guid')?.textContent||'';
+    if(doc.querySelector('parsererror'))return null;
+    return Array.from(doc.querySelectorAll('item')).slice(0,30).map(item=>{
+      let link=(item.querySelector('link')?.textContent
+               ||item.querySelector('link')?.nextSibling?.nodeValue
+               ||item.querySelector('guid')?.textContent||'').trim();
       let desc=(item.querySelector('description')?.textContent||'')
-        .replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
-        .replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
+        .replace(/<!\[CDATA\[|\]\]>/g,'').replace(/<[^>]+>/g,'')
+        .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&')
+        .replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g,' ').trim();
+      let title=(item.querySelector('title')?.textContent||'')
+        .replace(/<!\[CDATA\[|\]\]>/g,'').replace(/<[^>]+>/g,'').trim();
       let src=item.querySelector('source')?.textContent||'';
-      if(!src){try{src=new URL(link.trim()).hostname.replace('www.','').split('.')[0];}catch(e){src='News';}}
-      return{
-        title:(item.querySelector('title')?.textContent||'').replace(/<[^>]+>/g,'').trim(),
-        link:link.trim(),description:desc.substring(0,190),
-        pubDate:item.querySelector('pubDate')?.textContent||'',source:src
-      };
-    }).filter(i=>i.title&&i.link);
+      if(!src){try{src=new URL(link).hostname.replace('www.','').split('.')[0];}catch(e){src='News';}}
+      let pub=item.querySelector('pubDate')?.textContent||
+              item.querySelector('updated')?.textContent||
+              item.querySelector('dc\\:date,date')?.textContent||'';
+      return{title,link,description:desc.substring(0,200),pubDate:pub,source:src,
+             _ts:pub?new Date(pub).getTime():0};
+    }).filter(i=>i.title&&i.link&&i.link.startsWith('http'));
   }catch(e){return null;}
 }
 
-async function fetchRSS(url){
-  // Method 1: allorigins.win
+async function fetchOneURL(url){
+  // 1. allorigins /get
   try{
-    const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(url),{signal:AbortSignal.timeout(9000)});
+    const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent(url),{signal:AbortSignal.timeout(8000)});
     const d=await r.json();
     if(d.contents){const p=parseRSS(d.contents);if(p&&p.length>0)return p;}
-  }catch(e){console.log('allorigins:',e.message);}
-  // Method 2: corsproxy.io
+  }catch(e){}
+  // 2. allorigins /raw
   try{
-    const r=await fetch('https://corsproxy.io/?'+encodeURIComponent(url),{signal:AbortSignal.timeout(9000)});
+    const r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url),{signal:AbortSignal.timeout(8000)});
     const t=await r.text();
     const p=parseRSS(t);if(p&&p.length>0)return p;
-  }catch(e){console.log('corsproxy:',e.message);}
-  // Method 3: rss2json
+  }catch(e){}
+  // 3. corsproxy.io
   try{
-    const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(url)+'&count=20',{signal:AbortSignal.timeout(9000)});
+    const r=await fetch('https://corsproxy.io/?'+encodeURIComponent(url),{signal:AbortSignal.timeout(8000)});
+    const t=await r.text();
+    const p=parseRSS(t);if(p&&p.length>0)return p;
+  }catch(e){}
+  // 4. rss2json
+  try{
+    const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(url)+'&count=30',{signal:AbortSignal.timeout(8000)});
     const d=await r.json();
-    if(d.items&&d.items.length>0){
+    if(d.status==='ok'&&d.items?.length>0){
       return d.items.map(i=>({
         title:i.title||'',link:i.link||'',
-        description:(i.description||'').replace(/<[^>]+>/g,'').substring(0,190),
-        pubDate:i.pubDate||'',source:i.source?.name||extractDomain(i.link)
-      })).filter(i=>i.title);
+        description:(i.description||'').replace(/<[^>]+>/g,'').substring(0,200),
+        pubDate:i.pubDate||'',source:i.source?.name||extractDomain(i.link)||'News',
+        _ts:i.pubDate?new Date(i.pubDate).getTime():0
+      })).filter(i=>i.title&&i.link);
     }
-  }catch(e){console.log('rss2json:',e.message);}
-  throw new Error('All proxies failed');
+  }catch(e){}
+  return null;
+}
+
+async function fetchAllSources(cat){
+  const urls=CAT_SOURCES[cat]||[];
+  // Fetch all sources in parallel
+  const results=await Promise.allSettled(urls.map(u=>fetchOneURL(u)));
+  let all=[];
+  results.forEach(r=>{if(r.status==='fulfilled'&&r.value)all=all.concat(r.value);});
+  if(!all.length)return null;
+
+  // Filter by keywords
+  const kws=CAT_KW[cat]||[];
+  if(kws.length){
+    const filtered=all.filter(i=>kws.some(k=>(i.title+' '+i.description).toLowerCase().includes(k)));
+    if(filtered.length>=4)all=filtered;
+  }
+
+  // Deduplicate by title similarity
+  const seen=new Set();
+  all=all.filter(i=>{
+    const key=i.title.toLowerCase().substring(0,60);
+    if(seen.has(key))return false;
+    seen.add(key);return true;
+  });
+
+  // Sort newest first
+  all.sort((a,b)=>b._ts-a._ts);
+
+  return all.slice(0,30);
+}
+
+function freshBadge(ts){
+  if(!ts||ts===0)return '';
+  const mins=Math.floor((Date.now()-ts)/60000);
+  if(mins<60) return `<span class="nc-fresh fresh-new">🟢 ${mins}m ago</span>`;
+  if(mins<360)return `<span class="nc-fresh fresh-recent">🟡 ${Math.floor(mins/60)}h ago</span>`;
+  if(mins<1440)return `<span class="nc-fresh fresh-old">${Math.floor(mins/60)}h ago</span>`;
+  return `<span class="nc-fresh fresh-old">${Math.floor(mins/1440)}d ago</span>`;
 }
 
 async function loadNews(cat,leftBtn,sideBtn){
@@ -388,73 +481,86 @@ async function loadNews(cat,leftBtn,sideBtn){
   const meta=FEED_META[cat];
   document.querySelectorAll('.ncat').forEach(n=>n.classList.remove('active'));
   const se=document.getElementById('ncat-'+cat);
-  if(se){se.classList.add('active');}
+  if(se)se.classList.add('active');
   if(leftBtn){document.querySelectorAll('#news-menu .rbtn').forEach(b=>b.classList.remove('active'));leftBtn.classList.add('active');}
   const te=document.getElementById('news-panel-title');
   if(te){te.textContent=meta.label+' — Latest News';te.style.color=meta.color;}
+  document.getElementById('news-count').textContent='';
   document.getElementById('news-content').innerHTML=
-    `<div class="news-loading"><div style="font-size:28px;margin-bottom:10px">📡</div>
-     Loading ${meta.label}...<br>
-     <span style="font-size:9px;display:block;margin-top:6px;color:var(--td)">
-       OilPrice.com · Google News · Economic Times
-     </span></div>`;
-  try{
-    let items=await fetchRSS(FEEDS[cat]);
-    if(FEED_KW[cat]){
-      const kw=FEED_KW[cat];
-      const f=items.filter(i=>kw.some(k=>(i.title+i.description).toLowerCase().includes(k)));
-      if(f.length>=4)items=f;
-    }
-    if(!items.length)throw new Error('No items');
-    const cards=items.map(item=>{
-      const pub=item.pubDate?new Date(item.pubDate):null;
-      const ago=pub&&!isNaN(pub)?timeAgo(pub):'';
-      const sc=item.source?item.source.substring(0,16):'';
-      return `<a class="news-card ${meta.cls}-card" href="${item.link}" target="_blank" rel="noopener">
-        <div class="nc-head">
-          <div class="nc-title">${item.title}</div>
-          ${sc?`<span class="nc-src ${meta.cls}-src">${sc}</span>`:''}
-        </div>
-        ${item.description?`<div class="nc-desc">${item.description}${item.description.length>=188?'...':''}</div>`:''}
-        ${ago?`<div class="nc-time">🕐 ${ago}</div>`:''}
-      </a>`;
-    }).join('');
-    document.getElementById('news-content').innerHTML=
-      `<div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--td);margin-bottom:10px">
-         ${items.length} articles · ${new Date().toUTCString().substring(0,22)} UTC · Auto-refresh 5 min
-       </div><div class="news-grid">${cards}</div>`;
-  }catch(err){
-    const fl=FALLBACK_LINKS[cat]||[];
+    `<div class="news-loading">
+       <div style="font-size:32px;margin-bottom:12px">📡</div>
+       Fetching ${meta.label}...<br>
+       <span style="font-size:9px;display:block;margin-top:8px;color:var(--td)">
+         Reuters · BBC · ET · OilPrice — sorted newest first
+       </span>
+     </div>`;
+
+  const items=await fetchAllSources(cat);
+
+  if(!items||!items.length){
+    const fl=FALLBACK[cat]||[];
     document.getElementById('news-content').innerHTML=
       `<div class="nc-err">
-         ⚠ Feed temporarily unavailable.<br><br>
+         ⚠ All feeds temporarily unavailable.<br><br>
          <button onclick="loadNews('${cat}')"
            style="background:var(--bg2);border:1px solid var(--amber);color:var(--amber);
-           padding:7px 20px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;
-           font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px">
+           padding:8px 22px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;
+           font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:18px">
            ↻ RETRY
          </button><br>
-         <span style="font-size:9px;color:var(--td);display:block;margin-bottom:6px">Read directly:</span>
-         ${fl.map(l=>`<a href="${l[0]}" target="_blank" style="color:var(--amber);font-size:11px;display:block;margin-bottom:5px">↗ ${l[1]}</a>`).join('')}
+         <span style="font-size:9px;color:var(--td);display:block;margin-bottom:8px">Read directly:</span>
+         ${fl.map(l=>`<a href="${l[0]}" target="_blank"
+           style="color:var(--amber);font-size:12px;display:block;margin-bottom:6px;text-decoration:none">
+           ↗ ${l[1]}</a>`).join('')}
        </div>`;
+    return;
   }
+
+  const cls=meta.cls;
+  // Find newest timestamp for header
+  const newestTs=items[0]?._ts||0;
+  const newestStr=newestTs?`Latest: ${timeAgo(newestTs)}`:'';
+  document.getElementById('news-count').textContent=`${items.length} articles · ${newestStr}`;
+
+  const cards=items.map(item=>{
+    const src=(item.source||'').substring(0,18);
+    const badge=freshBadge(item._ts);
+    return `<a class="news-card ${cls}-card" href="${item.link}" target="_blank" rel="noopener">
+      <div class="nc-head">
+        <div class="nc-title">${item.title}</div>
+        ${src?`<span class="nc-src ${cls}-src">${src}</span>`:''}
+      </div>
+      ${item.description?`<div class="nc-desc">${item.description}${item.description.length>=198?'...':''}</div>`:''}
+      <div class="nc-foot">${badge}</div>
+    </a>`;
+  }).join('');
+
+  document.getElementById('news-content').innerHTML=
+    `<div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--td);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+       ${items.length} articles · Fetched: ${new Date().toUTCString().substring(0,22)} UTC · Auto-refresh 5 min
+     </div>
+     <div class="news-grid">${cards}</div>`;
+
   clearTimeout(newsTimer);
   newsTimer=setTimeout(()=>loadNews(currentCat),300000);
 }
 
 function refreshNews(){loadNews(currentCat);}
-function timeAgo(d){
-  const s=Math.floor((new Date()-d)/1000);
+
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
   if(s<60)return s+'s ago';
   if(s<3600)return Math.floor(s/60)+'m ago';
   if(s<86400)return Math.floor(s/3600)+'h ago';
   return Math.floor(s/86400)+'d ago';
 }
-function extractDomain(url){try{return new URL(url).hostname.replace('www.','').split('.')[0];}catch(e){return 'News';}}
+function extractDomain(url){
+  try{return new URL(url).hostname.replace('www.','').split('.')[0];}catch(e){return 'News';}
+}
 
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════
 // MODE SWITCH
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════
 function switchMode(m,btn){
   document.querySelectorAll('.navtab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
