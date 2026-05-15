@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hormuz Strait Intelligence & Commodity Portal</title>
+    <title>Hormuz Strait Terminal Intelligence & Commodity Portal</title>
     <style>
         :root {
-            --bg-color: #05070a;
-            --card-bg: #0c111d;
+            --bg-color: #030712;
+            --card-bg: #0b0f19;
             --border-color: #1f2937;
-            --text-primary: #d1d5db;
-            --text-muted: #6b7280;
+            --text-primary: #f3f4f6;
+            --text-muted: #9ca3af;
             --neon-blue: #06b6d4;
             --neon-amber: #f59e0b;
             --neon-green: #10b981;
             --neon-red: #ef4444;
+            --glow-blue: rgba(6, 182, 212, 0.15);
         }
 
         body {
@@ -22,21 +23,22 @@
             color: var(--text-primary);
             font-family: monospace;
             margin: 0;
-            padding: 16px;
+            padding: 12px;
             overflow-x: hidden;
+            box-sizing: border-box;
         }
 
         /* Top Market Ticker */
         .market-ticker {
-            background-color: #020408;
+            background-color: #020617;
             border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            margin-bottom: 16px;
+            padding: 10px 16px;
+            margin-bottom: 12px;
             display: flex;
-            gap: 24px;
+            gap: 28px;
             font-size: 11px;
-            overflow-x: auto;
-            white-space: nowrap;
+            border-radius: 4px;
+            align-items: center;
         }
 
         .ticker-item {
@@ -50,21 +52,21 @@
             justify-content: space-between;
             align-items: flex-end;
             border-bottom: 1px solid #1f2937;
-            padding-bottom: 16px;
-            margin-bottom: 24px;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .header h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             color: var(--neon-blue);
             margin: 0;
             text-transform: uppercase;
         }
 
         .header p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             margin: 4px 0 0 0;
         }
@@ -72,26 +74,29 @@
         .live-indicator {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             justify-content: flex-end;
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
             background-color: var(--neon-green);
             border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-green);
         }
 
+        /* Responsive Dashboard Grid Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 16px;
+            gap: 12px;
         }
 
-        @media (min-width: 1280px) {
+        /* Desktop and Tablet Landscape Grid System */
+        @media (min-width: 1024px) {
             .dashboard-grid {
-                grid-template-columns: 320px 1fr 450px;
+                grid-template-columns: 260px 1fr 400px;
             }
         }
 
@@ -104,16 +109,22 @@
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 2px;
+            padding: 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 10px var(--glow-blue);
         }
 
         .card-meta {
             font-size: 10px;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin: 0 0 4px 0;
-            font-style: italic;
+            margin: 0 0 6px 0;
+            letter-spacing: 0.5px;
         }
 
         .card-body {
@@ -123,7 +134,7 @@
         }
 
         .card-value {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             margin: 0;
         }
@@ -140,17 +151,18 @@
         .trend-down { color: var(--neon-red); }
 
         .log-box {
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(2, 6, 23, 0.5);
             border: 1px solid var(--border-color);
             padding: 12px;
-            height: 180px;
+            height: 145px;
             overflow: hidden;
+            border-radius: 4px;
         }
 
         .log-title {
             font-size: 10px;
             color: var(--text-muted);
-            margin: 0 0 8px 0;
+            margin: 0 0 6px 0;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 4px;
             text-transform: uppercase;
@@ -158,11 +170,11 @@
 
         .log-content {
             font-size: 11px;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            color: rgba(243, 244, 246, 0.7);
         }
 
-        /* Center Canvas Container */
+        /* Center Radar Component */
         .canvas-container {
             position: relative;
             background-color: var(--card-bg);
@@ -171,30 +183,32 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
-            min-height: 450px;
+            padding: 8px;
+            border-radius: 4px;
+            min-height: 400px;
         }
 
         .canvas-meta {
             position: absolute;
             top: 12px;
             left: 12px;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(2, 6, 23, 0.85);
             border: 1px solid rgba(6, 182, 212, 0.3);
             padding: 6px;
-            font-size: 10px;
+            font-size: 9px;
             display: flex;
             gap: 12px;
             text-transform: uppercase;
+            border-radius: 2px;
         }
 
         canvas {
             max-width: 100%;
             height: auto;
-            background-color: #05070a;
+            background-color: #030712;
         }
 
-        /* TradingView Column Style */
+        /* TradingView Chart Container */
         .chart-container {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -202,7 +216,9 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            min-height: 400px;
             box-sizing: border-box;
+            border-radius: 4px;
         }
 
         .legend {
@@ -211,7 +227,10 @@
             right: 12px;
             display: flex;
             gap: 12px;
-            font-size: 10px;
+            font-size: 9px;
+            background-color: rgba(2, 6, 23, 0.85);
+            padding: 4px 8px;
+            border-radius: 2px;
         }
 
         .legend-item {
@@ -221,20 +240,22 @@
         }
 
         .legend-dot {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 1px;
         }
 
-        /* Info Popup Window */
+        /* Floating HUD Selection Popup */
         .info-popup {
             display: none;
             position: absolute;
-            background-color: rgba(12, 17, 29, 0.95);
+            background-color: rgba(11, 15, 25, 0.98);
             border: 1px solid var(--neon-blue);
             padding: 12px;
-            width: 240px;
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            width: 220px;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
             z-index: 100;
+            border-radius: 4px;
         }
 
         .info-popup-title {
@@ -265,13 +286,13 @@
         }
 
         .footer {
-            margin-top: 24px;
+            margin-top: 20px;
             display: flex;
             justify-content: space-between;
             font-size: 9px;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
@@ -279,37 +300,37 @@
 
     <div class="market-ticker">
         <div class="ticker-item">
-            <span style="color: var(--text-muted);">BRENT CRUDE:</span>
-            <span style="color: var(--neon-amber); font-weight: bold;">$83.56</span>
+            <span style="color: var(--text-muted)">BRENT CRUDE</span>
+            <span style="color: var(--neon-amber); font-weight: bold">$83.56</span>
             <span class="trend-up">▲ +1.42%</span>
         </div>
         <div class="ticker-item">
-            <span style="color: var(--text-muted);">WTI CRUDE:</span>
-            <span style="color: var(--neon-amber); font-weight: bold;">$79.24</span>
+            <span style="color: var(--text-muted)">WTI CRUDE</span>
+            <span style="color: var(--neon-amber); font-weight: bold">$79.24</span>
             <span class="trend-up">▲ +1.18%</span>
         </div>
         <div class="ticker-item">
-            <span style="color: var(--text-muted);">NATURAL GAS:</span>
-            <span style="color: var(--neon-blue); font-weight: bold;">$2.14</span>
+            <span style="color: var(--text-muted)">NATURAL GAS</span>
+            <span style="color: var(--neon-blue); font-weight: bold">$2.14</span>
             <span class="trend-down">▼ -0.62%</span>
         </div>
         <div class="ticker-item" style="margin-left: auto;">
-            <span style="color: var(--text-muted);">STRAIT STATUS:</span>
-            <span style="color: var(--neon-green); font-weight: bold; animation: pulse 2s infinite;">GEO-RISK: LOW</span>
+            <span style="color: var(--text-muted)">STRAIT RISK</span>
+            <span style="color: var(--neon-green); font-weight: bold">LOW INDEX</span>
         </div>
     </div>
 
     <div class="header">
         <div>
-            <h1>Hormuz Strait Terminal Intelligence Portal</h1>
-            <p>Sector: 26.5667° N, 56.2500° E // Macro Trading Analytics</p>
+            <h1>Hormuz Strait Terminal Intelligence</h1>
+            <p>Sector: 26.5667° N, 56.2500° E // Macro Flow System</p>
         </div>
         <div>
             <div class="live-indicator">
                 <div class="dot"></div>
-                <span style="font-size: 12px; font-weight: bold; text-transform: uppercase;">Live Engine</span>
+                <span style="font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px">Live Signal</span>
             </div>
-            <p id="live-time" style="font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 4px;"></p>
+            <p id="live-time" style="font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 2px;"></p>
         </div>
     </div>
 
@@ -317,35 +338,34 @@
         
         <div class="sidebar">
             <div class="card">
-                <p class="card-meta">Inventory Transit: Crude Oil</p>
+                <p class="card-meta">Transit: Crude Oil</p>
                 <div class="card-body">
-                    <h2 class="card-value value-crude">24 Ystd</h2>
-                    <span class="trend trend-up">▲ 8.5% Vol</span>
+                    <h2 class="card-value value-crude">24 <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Ystd</span></h2>
+                    <span class="trend trend-up">▲ 8.5%</span>
                 </div>
             </div>
 
             <div class="card">
-                <p class="card-meta">Inventory Transit: LPG Gas</p>
+                <p class="card-meta">Transit: LPG Gas</p>
                 <div class="card-body">
-                    <h2 class="card-value value-lpg">12 Ystd</h2>
-                    <span class="trend trend-down">▼ 3.2% Vol</span>
+                    <h2 class="card-value value-lpg">12 <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">Ystd</span></h2>
+                    <span class="trend trend-down">▼ 3.2%</span>
                 </div>
             </div>
 
-            <div class="card" style="border-left: 3px solid var(--neon-blue);">
+            <div class="card" style="border-left: 2px solid var(--neon-blue);">
                 <p class="card-meta">Supply Chain Logistics</p>
-                <div class="info-row" style="margin-top: 4px;"><span class="info-label">Avg Congestion:</span> <span style="color: var(--neon-green);">1.4 Hours</span></div>
-                <div class="info-row"><span class="info-label">Flow Velocity:</span> <span>Optimal (14.2 kn)</span></div>
-                <div class="info-row"><span class="info-label">Disruption Risk:</span> <span style="color: var(--neon-green);">0.05% Index</span></div>
+                <div class="info-row"><span class="info-label">Avg Delay:</span> <span style="color: var(--neon-green)">1.4 Hours</span></div>
+                <div class="info-row"><span class="info-label">Velocity:</span> <span>Optimal</span></div>
+                <div class="info-row"><span class="info-label">Disruption:</span> <span style="color: var(--neon-green)">0.05%</span></div>
             </div>
 
             <div class="log-box">
                 <p class="log-title">Tactical Feed</p>
                 <div class="log-content">
-                    <div><span style="color: var(--text-muted)">[23:10]</span> <span style="color: var(--neon-amber)">OT-402</span> cleared Strait outward</div>
-                    <div><span style="color: var(--text-muted)">[22:42]</span> <span style="color: var(--neon-blue)">LG-109</span> heading toward Chiba</div>
-                    <div><span style="color: var(--text-muted)">[22:30]</span> Global inventory correlation: Stable</div>
-                    <div style="color: var(--neon-green);">_System tracking macro flows...</div>
+                    <div><span style="color: var(--text-muted)">[23:10]</span> <span style="color: var(--neon-amber)">OT-402</span> cleared outward</div>
+                    <div><span style="color: var(--text-muted)">[22:42]</span> <span style="color: var(--neon-blue)">LG-109</span> heading Chiba</div>
+                    <div style="color: var(--neon-green)">_Tracking metrics...</div>
                 </div>
             </div>
         </div>
@@ -353,10 +373,10 @@
         <div class="canvas-container" id="canvasContainer">
             <div class="canvas-meta">
                 <span>Range: 100 NM</span>
-                <span style="color: var(--neon-blue)">Overlay: Operational</span>
+                <span style="color: var(--neon-blue)">Overlay: Active</span>
             </div>
             
-            <canvas id="radarCanvas" width="700" height="480"></canvas>
+            <canvas id="radarCanvas" width="650" height="460"></canvas>
 
             <div class="info-popup" id="shipPopup">
                 <div class="info-popup-title">
@@ -373,18 +393,18 @@
             <div class="legend">
                 <div class="legend-item">
                     <div class="legend-dot" style="background-color: var(--neon-amber);"></div>
-                    <span>Crude Tanker</span>
+                    <span>Crude</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-dot" style="background-color: var(--neon-blue);"></div>
-                    <span>LPG Carrier</span>
+                    <span>LPG</span>
                 </div>
             </div>
         </div>
 
         <div class="chart-container">
-            <p class="card-meta" style="margin-bottom: 8px;">Real-Time Price Action: Brent Crude Oil furies</p>
-            <div id="tradingview_brent" style="width: 100%; height: 100%; min-height: 420px;"></div>
+            <p class="card-meta" style="margin-bottom: 8px;">Real-Time Price Action: Brent Crude Oil</p>
+            <div id="tradingview_brent" style="width: 100%; height: 100%; min-height: 380px;"></div>
             <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
             <script type="text/javascript">
                 new TradingView.widget({
@@ -402,19 +422,19 @@
                     "container_id": "tradingview_brent"
                 });
             </script>
-            </div>
+        </div>
 
     </div>
 
     <div class="footer">
-        <span>Trader Mode: Macro Energy Interface</span>
-        <span>Data Feeds: TradingView Embedded Array // System Canvas</span>
-        <span>© Global Maritime Intelligence Portfolio</span>
+        <span>Mode: Macro Analytics</span>
+        <span>Feeds: TradingView Array // System Canvas</span>
+        <span>© Global Maritime Intelligence</span>
     </div>
 
     <script>
         function updateTime() {
-            document.getElementById('live-time').innerText = 'Updated: ' + new Date().toLocaleTimeString();
+            document.getElementById('live-time').innerText = 'UTC: ' + new Date().toISOString().slice(11, 19);
         }
         setInterval(updateTime, 1000);
         updateTime();
@@ -425,18 +445,18 @@
         let angle = 0;
 
         const ships = [
-            { id: 'OT-402', x: 220, y: 160, type: 'CRUDE', speed: '12.4 kn', name: 'Al-Basra', flag: 'Panama (PA)', dest: 'Ningbo (CN)' },
-            { id: 'LG-109', x: 380, y: 280, type: 'LPG', speed: '15.2 kn', name: 'Gas Star', flag: 'Singapore (SG)', dest: 'Chiba (JP)' },
-            { id: 'OT-881', x: 140, y: 220, type: 'CRUDE', speed: '11.0 kn', name: 'Desert Sun', flag: 'Liberia (LR)', dest: 'Rotterdam (NL)' },
-            { id: 'LG-202', x: 500, y: 230, type: 'LPG', speed: '14.7 kn', name: 'Oman Pearl', flag: 'Oman (OM)', dest: 'Incheon (KR)' },
-            { id: 'OT-550', x: 300, y: 110, type: 'CRUDE', speed: '10.5 kn', name: 'Zayed One', flag: 'UAE (AE)', dest: 'Mumbai (IN)' },
+            { id: 'OT-402', x: 200, y: 150, type: 'CRUDE', speed: '12.4 kn', name: 'Al-Basra', flag: 'Panama (PA)', dest: 'Ningbo (CN)' },
+            { id: 'LG-109', x: 350, y: 260, type: 'LPG', speed: '15.2 kn', name: 'Gas Star', flag: 'Singapore (SG)', dest: 'Chiba (JP)' },
+            { id: 'OT-881', x: 130, y: 200, type: 'CRUDE', speed: '11.0 kn', name: 'Desert Sun', flag: 'Liberia (LR)', dest: 'Rotterdam (NL)' },
+            { id: 'LG-202', x: 460, y: 220, type: 'LPG', speed: '14.7 kn', name: 'Oman Pearl', flag: 'Oman (OM)', dest: 'Incheon (KR)' },
+            { id: 'OT-550', x: 280, y: 100, type: 'CRUDE', speed: '10.5 kn', name: 'Zayed One', flag: 'UAE (AE)', dest: 'Mumbai (IN)' },
         ];
 
         function drawRadar() {
-            ctx.fillStyle = '#05070a';
+            ctx.fillStyle = '#030712';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Technical Grid Lines
+            // Technical Grid Overlay
             ctx.strokeStyle = '#111827';
             ctx.lineWidth = 1;
             for (let i = 0; i < canvas.width; i += 40) {
@@ -446,37 +466,37 @@
                 ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
             }
 
-            // Coast Outline Constraints
+            // Topography Vectors
             ctx.strokeStyle = '#1e293b';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
-            ctx.moveTo(0, 100);
-            ctx.bezierCurveTo(180, 60, 350, 180, 480, 90);
-            ctx.lineTo(canvas.width, 60);
+            ctx.moveTo(0, 90);
+            ctx.bezierCurveTo(160, 50, 320, 170, 450, 80);
+            ctx.lineTo(canvas.width, 50);
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.moveTo(0, 380);
-            ctx.bezierCurveTo(180, 340, 400, 420, 520, 320);
-            ctx.lineTo(canvas.width, 400);
+            ctx.moveTo(0, 360);
+            ctx.bezierCurveTo(160, 320, 380, 400, 480, 300);
+            ctx.lineTo(canvas.width, 380);
             ctx.stroke();
 
-            // Tactical Sweep Scan
+            // Intermittent Sweeper Fade
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.rotate(angle);
-            let gradient = ctx.createRadialGradient(0, 0, 80, 0, 0, 500);
-            gradient.addColorStop(0, 'rgba(6, 182, 212, 0.12)');
+            let gradient = ctx.createRadialGradient(0, 0, 60, 0, 0, 450);
+            gradient.addColorStop(0, 'rgba(6, 182, 212, 0.1)');
             gradient.addColorStop(1, 'transparent');
             ctx.fillStyle = gradient;
             ctx.beginPath();
             ctx.moveTo(0, 0);
-            ctx.arc(0, 0, 500, 0, Math.PI / 4);
+            ctx.arc(0, 0, 450, 0, Math.PI / 4);
             ctx.lineTo(0, 0);
             ctx.fill();
             ctx.restore();
 
-            // Draw Vector Entities
+            // Render Spatial Vectors
             ships.forEach(ship => {
                 const color = ship.type === 'CRUDE' ? '#f59e0b' : '#06b6d4';
                 
@@ -487,18 +507,18 @@
 
                 ctx.strokeStyle = color;
                 ctx.lineWidth = 0.5;
-                ctx.strokeRect(ship.x - 7, ship.y - 7, 14, 14);
+                ctx.strokeRect(ship.x - 6, ship.y - 6, 12, 12);
 
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
                 ctx.font = '10px monospace';
-                ctx.fillText(ship.id, ship.x + 12, ship.y - 3);
+                ctx.fillText(ship.id, ship.x + 10, ship.y - 3);
             });
 
-            angle += 0.006;
+            angle += 0.005;
             requestAnimationFrame(drawRadar);
         }
 
-        // Click Intersection Logic
+        // Click Event Matrix Matrix
         canvas.addEventListener('click', function(event) {
             const rect = canvas.getBoundingClientRect();
             const mouseX = (event.clientX - rect.left) * (canvas.width / rect.width);
@@ -517,8 +537,8 @@
                     document.getElementById('pop-flag').innerText = ship.flag;
                     document.getElementById('pop-dest').innerText = ship.dest;
 
-                    popup.style.left = (event.clientX - rect.left + 10) + 'px';
-                    popup.style.top = (event.clientY - rect.top + 10) + 'px';
+                    popup.style.left = (event.clientX - rect.left + 8) + 'px';
+                    popup.style.top = (event.clientY - rect.top + 8) + 'px';
                     popup.style.display = 'block';
                     
                     targetFound = true;
@@ -528,7 +548,7 @@
             if (!targetFound) popup.style.display = 'none';
         });
 
-        // Mouse Hover Tracking
+        // Hover Constraint
         canvas.addEventListener('mousemove', function(event) {
             const rect = canvas.getBoundingClientRect();
             const mouseX = (event.clientX - rect.left) * (canvas.width / rect.width);
