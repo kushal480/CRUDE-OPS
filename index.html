@@ -193,6 +193,46 @@
             height: 8px;
         }
 
+        /* Technical Info Modal Pop-up */
+        .info-popup {
+            display: none;
+            position: absolute;
+            background-color: rgba(12, 17, 29, 0.95);
+            border: 1px solid var(--neon-blue);
+            padding: 16px;
+            width: 260px;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .info-popup-title {
+            color: var(--neon-blue);
+            font-weight: bold;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            color: var(--neon-red);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+        }
+
         .footer {
             margin-top: 24px;
             display: flex;
@@ -251,13 +291,25 @@
             </div>
         </div>
 
-        <div class="canvas-container">
+        <div class="canvas-container" id="canvasContainer">
             <div class="canvas-meta">
                 <span>Scan Range: 100 NM</span>
                 <span style="color: var(--neon-blue)">Tactical Overlay: ON</span>
             </div>
             
             <canvas id="radarCanvas" width="850" height="500"></canvas>
+
+            <div class="info-popup" id="shipPopup">
+                <div class="info-popup-title">
+                    <span id="pop-id">TARGET DETAILS</span>
+                    <span class="close-btn" onclick="closePopup()">[X]</span>
+                </div>
+                <div class="info-row"><span class="info-label">NAME:</span> <span id="pop-name">-</span></div>
+                <div class="info-row"><span class="info-label">TYPE:</span> <span id="pop-type">-</span></div>
+                <div class="info-row"><span class="info-label">SPEED:</span> <span id="pop-speed">-</span></div>
+                <div class="info-row"><span class="info-label">FLAG:</span> <span id="pop-flag">-</span></div>
+                <div class="info-row"><span class="info-label">DEST:</span> <span id="pop-dest">-</span></div>
+            </div>
 
             <div class="legend">
                 <div class="legend-item">
@@ -279,33 +331,31 @@
     </div>
 
     <script>
-        // Update Time Layout
         function updateTime() {
             document.getElementById('live-time').innerText = 'Updated: ' + new Date().toLocaleTimeString();
         }
         setInterval(updateTime, 1000);
         updateTime();
 
-        // Canvas Implementation
         const canvas = document.getElementById('radarCanvas');
         const ctx = canvas.getContext('2d');
+        const popup = document.getElementById('shipPopup');
         let angle = 0;
 
-        // Static Ship Mock Positions
+        // Expanded Ship Dataset with Extra Metadata for Selection
         const ships = [
-            { id: 'OT-402', x: 250, y: 150, type: 'CRUDE', speed: '12kn', name: 'Al-Basra' },
-            { id: 'LG-109', x: 400, y: 300, type: 'LPG', speed: '15kn', name: 'Gas Star' },
-            { id: 'OT-881', x: 150, y: 200, type: 'CRUDE', speed: '11kn', name: 'Desert Sun' },
-            { id: 'LG-202', x: 550, y: 250, type: 'LPG', speed: '14kn', name: 'Oman Pearl' },
-            { id: 'OT-550', x: 320, y: 100, type: 'CRUDE', speed: '10kn', name: 'Zayed One' },
+            { id: 'OT-402', x: 250, y: 150, type: 'CRUDE', speed: '12.4 kn', name: 'Al-Basra', flag: 'Panama (PA)', dest: 'Ningbo (CN)' },
+            { id: 'LG-109', x: 400, y: 300, type: 'LPG', speed: '15.2 kn', name: 'Gas Star', flag: 'Singapore (SG)', dest: 'Chiba (JP)' },
+            { id: 'OT-881', x: 150, y: 200, type: 'CRUDE', speed: '11.0 kn', name: 'Desert Sun', flag: 'Liberia (LR)', dest: 'Rotterdam (NL)' },
+            { id: 'LG-202', x: 550, y: 250, type: 'LPG', speed: '14.7 kn', name: 'Oman Pearl', flag: 'Oman (OM)', dest: 'Incheon (KR)' },
+            { id: 'OT-550', x: 320, y: 100, type: 'CRUDE', speed: '10.5 kn', name: 'Zayed One', flag: 'UAE (AE)', dest: 'Mumbai (IN)' },
         ];
 
         function drawRadar() {
-            // Background Clear
             ctx.fillStyle = '#05070a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Technical Grid Lines
+            // Grid Lines
             ctx.strokeStyle = '#111827';
             ctx.lineWidth = 1;
             for (let i = 0; i < canvas.width; i += 50) {
@@ -315,7 +365,7 @@
                 ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
             }
 
-            // Strait Geography Outline
+            // Geography Boundary
             ctx.strokeStyle = '#1e293b';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -330,7 +380,7 @@
             ctx.lineTo(800, 450);
             ctx.stroke();
 
-            // Radar Sweep Implementation
+            // Radar Sweep Animation
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.rotate(angle);
@@ -345,34 +395,86 @@
             ctx.fill();
             ctx.restore();
 
-            // Render Targets
+            // Rendering Ships
             ships.forEach(ship => {
                 const color = ship.type === 'CRUDE' ? '#f59e0b' : '#06b6d4';
                 
-                // Radar Blip
                 ctx.fillStyle = color;
                 ctx.beginPath();
                 ctx.arc(ship.x, ship.y, 4, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Vector Square Box
                 ctx.strokeStyle = color;
                 ctx.lineWidth = 0.5;
                 ctx.strokeRect(ship.x - 8, ship.y - 8, 16, 16);
 
-                // Text Metadata Blocks
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
                 ctx.font = '10px monospace';
-                ctx.fillText(ship.id + ' [' + ship.speed + ']', ship.x + 12, ship.y - 4);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                ctx.fillText(ship.name, ship.x + 12, ship.y + 8);
+                ctx.fillText(ship.id, ship.x + 12, ship.y - 4);
             });
 
-            angle += 0.01;
+            angle += 0.005; // Smooth slow radar sweep
             requestAnimationFrame(drawRadar);
         }
 
-        // Initialize Loop
+        // Click Detection Logic (Raycasting 2D)
+        canvas.addEventListener('click', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            // Scale click coordinates dynamically based on canvas bounding rect
+            const mouseX = (event.clientX - rect.left) * (canvas.width / rect.width);
+            const mouseY = (event.clientY - rect.top) * (canvas.height / rect.height);
+
+            let targetFound = false;
+
+            ships.forEach(ship => {
+                // Check if click boundary falls inside the 16x16 pixels box of the vessel target
+                if (mouseX >= ship.x - 12 && mouseX <= ship.x + 12 &&
+                    mouseY >= ship.y - 12 && mouseY <= ship.y + 12) {
+                    
+                    // Injecting properties to the Intel Popup box
+                    document.getElementById('pop-id').innerText = 'TARGET: ' + ship.id;
+                    document.getElementById('pop-name').innerText = ship.name;
+                    document.getElementById('pop-type').innerText = ship.type === 'CRUDE' ? 'Crude Oil Tanker' : 'LPG Gas Carrier';
+                    document.getElementById('pop-speed').innerText = ship.speed;
+                    document.getElementById('pop-flag').innerText = ship.flag;
+                    document.getElementById('pop-dest').innerText = ship.dest;
+
+                    // Display Popup right near the clicked coordinate location
+                    popup.style.left = (event.clientX - rect.left + 15) + 'px';
+                    popup.style.top = (event.clientY - rect.top + 15) + 'px';
+                    popup.style.display = 'block';
+                    
+                    targetFound = true;
+                }
+            });
+
+            if (!targetFound) {
+                // If user clicks on open sea/empty area, close previous popup panel
+                popup.style.display = 'none';
+            }
+        });
+
+        // Dynamic Cursor Change Hover Effect
+        canvas.addEventListener('mousemove', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (event.clientX - rect.left) * (canvas.width / rect.width);
+            const mouseY = (event.clientY - rect.top) * (canvas.height / rect.height);
+            
+            let isHovering = false;
+            ships.forEach(ship => {
+                if (mouseX >= ship.x - 12 && mouseX <= ship.x + 12 &&
+                    mouseY >= ship.y - 12 && mouseY <= ship.y + 12) {
+                    isHovering = true;
+                }
+            });
+            
+            canvas.style.cursor = isHovering ? 'pointer' : 'default';
+        });
+
+        function closePopup() {
+            popup.style.display = 'none';
+        }
+
         drawRadar();
     </script>
 </body>
