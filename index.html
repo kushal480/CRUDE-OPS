@@ -1,198 +1,379 @@
-import React, { useEffect, useRef, useState } from 'react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hormuz Strait Intelligence Portal</title>
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --card-bg: #0c111d;
+            --border-color: #1f2937;
+            --text-primary: #d1d5db;
+            --text-muted: #6b7280;
+            --neon-blue: #06b6d4;
+            --neon-amber: #f59e0b;
+            --neon-green: #10b981;
+            --neon-red: #ef4444;
+        }
 
-const App = () => {
-  const canvasRef = useRef(null);
-  const [stats, setStats] = useState({
-    crude: { count: 24, percent: 8.5, up: true },
-    lpg: { count: 12, percent: 3.2, up: false },
-    total: 36
-  });
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: monospace;
+            margin: 0;
+            padding: 24px;
+        }
 
-  // সিমুলেটেড শিপ ডেটা
-  const ships = useRef([
-    { id: 'OT-402', x: 250, y: 150, type: 'CRUDE', speed: '12kn', name: 'Al-Basra' },
-    { id: 'LG-109', x: 400, y: 300, type: 'LPG', speed: '15kn', name: 'Gas Star' },
-    { id: 'OT-881', x: 150, y: 200, type: 'CRUDE', speed: '11kn', name: 'Desert Sun' },
-    { id: 'LG-202', x: 550, y: 250, type: 'LPG', speed: '14kn', name: 'Oman Pearl' },
-    { id: 'OT-550', x: 320, y: 100, type: 'CRUDE', speed: '10kn', name: 'Zayed One' },
-  ]);
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
-    let angle = 0;
+        .header h1 {
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: var(--neon-blue);
+            margin: 0;
+            text-transform: uppercase;
+        }
 
-    const draw = () => {
-      // ব্যাকগ্রাউন্ড রিসেট
-      ctx.fillStyle = '#05070a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+        .header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 4px 0 0 0;
+        }
 
-      // গ্রিড ড্রয়িং
-      ctx.strokeStyle = '#111827';
-      ctx.lineWidth = 1;
-      for (let i = 0; i < canvas.width; i += 50) {
-        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
-      }
-      for (let i = 0; i < canvas.height; i += 50) {
-        ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
-      }
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: flex-end;
+        }
 
-      // হরমুজ প্রণালীর ম্যাপ আউটলাইন (Simplified Path)
-      ctx.strokeStyle = '#1e293b';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(0, 100);
-      ctx.bezierCurveTo(200, 50, 400, 200, 500, 100); // ইরান কোস্ট
-      ctx.lineTo(800, 50);
-      ctx.stroke();
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-green);
+            border-radius: 50%;
+        }
 
-      ctx.beginPath();
-      ctx.moveTo(0, 400);
-      ctx.bezierCurveTo(200, 350, 450, 450, 550, 350); // ওমান/ইউএই কোস্ট
-      ctx.lineTo(800, 450);
-      ctx.stroke();
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
 
-      // রাডার সুইপ অ্যানিমেশন
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(angle);
-      let gradient = ctx.createRadialGradient(0, 0, 100, 0, 0, 600);
-      gradient.addColorStop(0, 'rgba(0, 255, 200, 0.15)');
-      gradient.addColorStop(1, 'transparent');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.arc(0, 0, 600, 0, Math.PI / 4);
-      ctx.fill();
-      ctx.restore();
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 3fr;
+            }
+        }
 
-      // জাহাজগুলো ড্র করা
-      ships.current.forEach(ship => {
-        const color = ship.type === 'CRUDE' ? '#f59e0b' : '#06b6d4';
-        
-        // ব্লিপ
-        ctx.fillStyle = color;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = color;
-        ctx.beginPath();
-        ctx.arc(ship.x, ship.y, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-        // ইনফো বক্স
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.font = '10px monospace';
-        ctx.fillText(`${ship.id} [${ship.speed}]`, ship.x + 10, ship.y - 5);
-        ctx.fillStyle = 'rgba(255,255,255,0.4)';
-        ctx.fillText(ship.name, ship.x + 10, ship.y + 8);
-        
-        // টার্গেট স্কয়ার
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 0.5;
-        ctx.strokeRect(ship.x - 8, ship.y - 8, 16, 16);
-      });
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: 2px;
+        }
 
-      angle += 0.01;
-      animationFrameId = requestAnimationFrame(draw);
-    };
+        .card-meta {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin: 0 0 8px 0;
+            font-style: italic;
+        }
 
-    draw();
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
 
-  return (
-    <div className="min-h-screen bg-[#05070a] text-gray-300 p-6 font-mono selection:bg-cyan-900">
-      {/* Header */}
-      <div className="flex justify-between items-end border-b border-gray-800 pb-4 mb-6">
+        .card-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .value-crude { color: var(--neon-amber); }
+        .value-lpg { color: var(--neon-blue); }
+
+        .trend {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .trend-up { color: var(--neon-green); }
+        .trend-down { color: var(--neon-red); }
+
+        .log-box {
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .log-title {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin: 0 0 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .log-content {
+            font-size: 11px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .canvas-container {
+            position: relative;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .canvas-meta {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 8px;
+            font-size: 10px;
+            display: flex;
+            gap: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            background-color: #05070a;
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            display: flex;
+            gap: 16px;
+            font-size: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+        }
+
+        .footer {
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
         <div>
-          <h1 className="text-xl font-bold tracking-widest text-cyan-500 uppercase">
-            Hormuz Strait Intelligence Portal
-          </h1>
-          <p className="text-xs text-gray-500 mt-1">Sector: 26.5667° N, 56.2500° E // Restricted Access</p>
+            <h1>Hormuz Strait Intelligence Portal</h1>
+            <p>Sector: 26.5667° N, 56.2500° E // Restricted Access</p>
         </div>
-        <div className="text-right">
-          <div className="flex items-center gap-2 justify-end">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span className="text-xs font-bold uppercase tracking-tighter">Live Signal</span>
-          </div>
-          <p className="text-[10px] text-gray-600 mt-1">Updated: {new Date().toLocaleTimeString()}</p>
+        <div>
+            <div class="live-indicator">
+                <div class="dot"></div>
+                <span style="font-size: 12px; font-weight: bold; text-transform: uppercase;">Live Signal</span>
+            </div>
+            <p id="live-time" style="font-size: 10px; color: var(--text-muted); text-align: right; margin-top: 4px;"></p>
         </div>
-      </div>
+    </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Stats Column */}
-        <div className="lg:col-span-1 space-y-4">
-          <div className="bg-[#0c111d] border border-gray-800 p-4 rounded-sm">
-            <p className="text-[10px] text-gray-500 uppercase mb-2 italic">Commodity: Crude Oil</p>
-            <div className="flex justify-between items-end">
-              <h2 className="text-4xl font-bold text-amber-500">{stats.crude.count}</h2>
-              <span className={`text-xs font-bold ${stats.crude.up ? 'text-green-500' : 'text-red-500'}`}>
-                {stats.crude.up ? '▲' : '▼'} {stats.crude.percent}%
-              </span>
-            </div>
-            <p className="text-[10px] text-gray-600 mt-2 tracking-tighter text-right">Daily Vessel Volume</p>
-          </div>
-
-          <div className="bg-[#0c111d] border border-gray-800 p-4 rounded-sm">
-            <p className="text-[10px] text-gray-500 uppercase mb-2 italic">Commodity: LPG Gas</p>
-            <div className="flex justify-between items-end">
-              <h2 className="text-4xl font-bold text-cyan-500">{stats.lpg.count}</h2>
-              <span className={`text-xs font-bold ${stats.lpg.up ? 'text-green-500' : 'text-red-500'}`}>
-                {stats.lpg.up ? '▲' : '▼'} {stats.lpg.percent}%
-              </span>
-            </div>
-            <p className="text-[10px] text-gray-600 mt-2 tracking-tighter text-right">Daily Vessel Volume</p>
-          </div>
-
-          {/* Terminal Style Log */}
-          <div className="bg-black/40 border border-gray-800 p-3 rounded-sm h-64 overflow-hidden relative">
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none bg-gradient-to-b from-transparent to-black/20"></div>
-            <h3 className="text-[10px] text-gray-500 mb-2 border-b border-gray-800 pb-1">Activity Log</h3>
-            <div className="text-[9px] space-y-2 opacity-70">
-              <p><span className="text-gray-600">[22:45]</span> <span className="text-amber-500">OT-402</span> entered checkpoint ALPHA</p>
-              <p><span className="text-gray-600">[22:42]</span> <span className="text-cyan-500">LG-109</span> heading towards Jebel Ali</p>
-              <p><span className="text-gray-600">[22:38]</span> Weather condition: Clear // 10nm visibility</p>
-              <p><span className="text-gray-600">[22:30]</span> <span className="text-amber-500">OT-881</span> verified by Port Authority</p>
-              <p className="animate-pulse text-green-800">_Scanning for new signals...</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Center Canvas Column */}
-        <div className="lg:col-span-3 relative bg-[#0c111d] border border-gray-800 rounded-sm overflow-hidden flex items-center justify-center">
-            <div className="absolute top-4 left-4 z-10">
-                <div className="bg-black/60 backdrop-blur-md border border-cyan-900/50 p-2 text-[10px] flex gap-4 uppercase tracking-widest">
-                    <span>Scan Range: 100 NM</span>
-                    <span className="text-cyan-400">Tactical Overlay: ON</span>
+    <div class="dashboard-grid">
+        
+        <div class="sidebar">
+            <div class="card">
+                <p class="card-meta">Commodity: Crude Oil</p>
+                <div class="card-body">
+                    <h2 class="card-value value-crude">24</h2>
+                    <span class="trend trend-up">▲ 8.5%</span>
                 </div>
             </div>
-          <canvas 
-            ref={canvasRef} 
-            width={850} 
-            height={500}
-            className="w-full h-auto cursor-crosshair"
-          />
-          {/* Legend */}
-          <div className="absolute bottom-4 right-4 flex gap-4 text-[10px]">
-            <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-amber-500"></div> <span>Crude Tanker</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-cyan-500"></div> <span>LPG Carrier</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Footer Meta */}
-      <div className="mt-6 flex justify-between text-[9px] text-gray-600 uppercase tracking-[0.2em]">
+            <div class="card">
+                <p class="card-meta">Commodity: LPG Gas</p>
+                <div class="card-body">
+                    <h2 class="card-value value-lpg">12</h2>
+                    <span class="trend trend-down">▼ 3.2%</span>
+                </div>
+            </div>
+
+            <div class="log-box">
+                <p class="log-title">Activity Log</p>
+                <div class="log-content">
+                    <div><span style="color: var(--text-muted)">[22:45]</span> <span style="color: var(--neon-amber)">OT-402</span> entered checkpoint ALPHA</div>
+                    <div><span style="color: var(--text-muted)">[22:42]</span> <span style="color: var(--neon-blue)">LG-109</span> heading towards Jebel Ali</div>
+                    <div><span style="color: var(--text-muted)">[22:38]</span> Weather condition: Clear // 10nm visibility</div>
+                    <div><span style="color: var(--text-muted)">[22:30]</span> <span style="color: var(--neon-amber)">OT-881</span> verified by Port Authority</div>
+                    <div style="color: var(--neon-green);">_Scanning for new signals...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <div class="canvas-meta">
+                <span>Scan Range: 100 NM</span>
+                <span style="color: var(--neon-blue)">Tactical Overlay: ON</span>
+            </div>
+            
+            <canvas id="radarCanvas" width="850" height="500"></canvas>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background-color: var(--neon-amber);"></div>
+                    <span>Crude Tanker</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background-color: var(--neon-blue);"></div>
+                    <span>LPG Carrier</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
         <span>Signal Encryption: 256-bit AES</span>
         <span>Authorized Intelligence Personnel Only</span>
-        <span>© 2024 Global Maritime Intelligence</span>
-      </div>
+        <span>© Global Maritime Intelligence</span>
     </div>
-  );
-};
 
-export default App;
+    <script>
+        // Update Time Layout
+        function updateTime() {
+            document.getElementById('live-time').innerText = 'Updated: ' + new Date().toLocaleTimeString();
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Canvas Implementation
+        const canvas = document.getElementById('radarCanvas');
+        const ctx = canvas.getContext('2d');
+        let angle = 0;
+
+        // Static Ship Mock Positions
+        const ships = [
+            { id: 'OT-402', x: 250, y: 150, type: 'CRUDE', speed: '12kn', name: 'Al-Basra' },
+            { id: 'LG-109', x: 400, y: 300, type: 'LPG', speed: '15kn', name: 'Gas Star' },
+            { id: 'OT-881', x: 150, y: 200, type: 'CRUDE', speed: '11kn', name: 'Desert Sun' },
+            { id: 'LG-202', x: 550, y: 250, type: 'LPG', speed: '14kn', name: 'Oman Pearl' },
+            { id: 'OT-550', x: 320, y: 100, type: 'CRUDE', speed: '10kn', name: 'Zayed One' },
+        ];
+
+        function drawRadar() {
+            // Background Clear
+            ctx.fillStyle = '#05070a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Technical Grid Lines
+            ctx.strokeStyle = '#111827';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 50) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += 50) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+
+            // Strait Geography Outline
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, 100);
+            ctx.bezierCurveTo(200, 50, 400, 200, 500, 100);
+            ctx.lineTo(800, 50);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(0, 400);
+            ctx.bezierCurveTo(200, 350, 450, 450, 550, 350);
+            ctx.lineTo(800, 450);
+            ctx.stroke();
+
+            // Radar Sweep Implementation
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            ctx.rotate(angle);
+            let gradient = ctx.createRadialGradient(0, 0, 100, 0, 0, 600);
+            gradient.addColorStop(0, 'rgba(6, 182, 212, 0.15)');
+            gradient.addColorStop(1, 'transparent');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, 600, 0, Math.PI / 4);
+            ctx.lineTo(0, 0);
+            ctx.fill();
+            ctx.restore();
+
+            // Render Targets
+            ships.forEach(ship => {
+                const color = ship.type === 'CRUDE' ? '#f59e0b' : '#06b6d4';
+                
+                // Radar Blip
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(ship.x, ship.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Vector Square Box
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 0.5;
+                ctx.strokeRect(ship.x - 8, ship.y - 8, 16, 16);
+
+                // Text Metadata Blocks
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.font = '10px monospace';
+                ctx.fillText(ship.id + ' [' + ship.speed + ']', ship.x + 12, ship.y - 4);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fillText(ship.name, ship.x + 12, ship.y + 8);
+            });
+
+            angle += 0.01;
+            requestAnimationFrame(drawRadar);
+        }
+
+        // Initialize Loop
+        drawRadar();
+    </script>
+</body>
+</html>
